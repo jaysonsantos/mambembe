@@ -1,0 +1,2 @@
+[workspace]
+members = ["cli", "desktop-client", "lib", "keyring", "stub_server"]
