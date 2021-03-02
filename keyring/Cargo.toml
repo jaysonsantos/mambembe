@@ -1,0 +1,15 @@
+[package]
+name = "mambembe-keyring"
+version = "0.1.0"
+authors = ["Jayson Reis <santosdosreis@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+keyring = { git = "https://github.com/jaysonsantos/keyring-rs", branch = "my-changes" }
+lazy_static = "1.4.0"
+mambembe-lib = { path = "../lib" }
+serde = "1.0.124"
+serde_json = "1.0.64"
+thiserror = "1.0.24"

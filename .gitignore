@@ -1,0 +1,4 @@
+/target
+/lib/Cargo.lock
+/.env
+device.json
