@@ -1,5 +1,6 @@
 use std::fs;
 
+use async_trait::async_trait;
 use rand::{thread_rng, Rng};
 use reqwest::Client;
 use rsa::RSAPrivateKey;
@@ -57,6 +58,21 @@ impl TimeSync {
     }
 }
 
+#[async_trait]
+pub trait AuthyClientApi {
+    async fn check_user_status(&mut self, phone: &str) -> Result<CheckStatusResponse>;
+    async fn register_device(&self) -> Result<RegisterDeviceResponse>;
+    async fn check_registration(&self, request_id: &str) -> Result<CheckRegistrationStatus>;
+    async fn complete_registration(&mut self, pin: &str) -> Result<()>;
+    async fn check_current_device(&self) -> Result<()>;
+    async fn check_current_device_keys(&self) -> Result<()>;
+    async fn fetch_private_keys(&mut self) -> Result<()>;
+    async fn list_devices(&self) -> Result<Vec<Device>>;
+    async fn sync_time_with_server(&mut self) -> Result<()>;
+    async fn list_authenticator_tokens(&self) -> Result<Vec<AuthenticatorToken>>;
+    async fn get_otp_token(&self, authentication_token: &AuthenticatorToken) -> Result<String>;
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AuthyClient {
     url: Url,
@@ -108,8 +124,37 @@ impl AuthyClient {
         })
     }
 
+    /// Not used right now but maybe in the future
+    #[allow(dead_code)]
+    fn get_private_key(&self) -> Result<&RSAPrivateKey> {
+        self.parsed_private_key
+            .as_ref()
+            .ok_or(MambembeError::PrivateKeyNotFetched)
+    }
+
+    fn get_authy_id(&self) -> Result<AuthyId> {
+        self.authy_id.ok_or(MambembeError::DeviceNotInitialized)
+    }
+
+    fn get_device(&self) -> Result<&Device> {
+        self.device
+            .as_ref()
+            .ok_or(MambembeError::DeviceNotInitialized)
+    }
+
+    fn initialize_authenticator_token(
+        &self,
+        authentication_token: &mut AuthenticatorToken,
+    ) -> Result<()> {
+        authentication_token.initialize_token(&self.backup_password);
+        Ok(())
+    }
+}
+
+#[async_trait]
+impl AuthyClientApi for AuthyClient {
     #[instrument]
-    pub async fn check_user_status(&mut self, phone: &str) -> Result<CheckStatusResponse> {
+    async fn check_user_status(&mut self, phone: &str) -> Result<CheckStatusResponse> {
         let response = self
             .http_client
             .get(&format!("{}/users/{}/status", self.url.as_str(), phone))
@@ -136,7 +181,7 @@ impl AuthyClient {
     }
 
     #[instrument]
-    pub async fn register_device(&self) -> Result<RegisterDeviceResponse> {
+    async fn register_device(&self) -> Result<RegisterDeviceResponse> {
         let authy_id = self.get_authy_id()?;
         let payload = AuthyRegisterDeviceRequest {
             device_name: self.device_name.clone(),
@@ -163,7 +208,7 @@ impl AuthyClient {
     }
 
     #[instrument]
-    pub async fn check_registration(&self, request_id: &str) -> Result<CheckRegistrationStatus> {
+    async fn check_registration(&self, request_id: &str) -> Result<CheckRegistrationStatus> {
         let payload = AuthyCheckRegistrationRequest {
             api_key: API_KEY.to_string(),
             locale: DEFAULT_LOCALE.to_string(),
@@ -193,7 +238,7 @@ impl AuthyClient {
     }
 
     #[instrument]
-    pub async fn complete_registration(&mut self, pin: &str) -> Result<()> {
+    async fn complete_registration(&mut self, pin: &str) -> Result<()> {
         // I'm assuming this is used for idempotency so this should suffice
         let uuid = format!("{:x}", md5::compute(&pin.as_bytes()));
         let payload = AuthyCompleteRegistrationRequest {
@@ -224,7 +269,7 @@ impl AuthyClient {
     }
 
     #[instrument]
-    pub async fn check_current_device(&self) -> Result<()> {
+    async fn check_current_device(&self) -> Result<()> {
         let device = self
             .device
             .as_ref()
@@ -253,7 +298,7 @@ impl AuthyClient {
     }
 
     #[instrument]
-    pub async fn check_current_device_keys(&self) -> Result<()> {
+    async fn check_current_device_keys(&self) -> Result<()> {
         let device = self.get_device()?;
         let (otp1, otp2, otp3) = device.calculate_tokens(self.time_sync.as_ref());
         let url = format!(
@@ -282,7 +327,7 @@ impl AuthyClient {
     }
 
     #[instrument]
-    pub async fn fetch_private_keys(&mut self) -> Result<()> {
+    async fn fetch_private_keys(&mut self) -> Result<()> {
         if let Some(key) = self.private_key.as_ref() {
             if self.parsed_private_key.is_none() {
                 self.parsed_private_key = Some(parse_private_key(key)?);
@@ -319,7 +364,7 @@ impl AuthyClient {
     }
 
     #[instrument]
-    pub async fn list_devices(&self) -> Result<Vec<Device>> {
+    async fn list_devices(&self) -> Result<Vec<Device>> {
         let url = format!("{}/json/users/{}/devices", self.url, self.get_authy_id()?);
         let response = self
             .http_client
@@ -334,7 +379,7 @@ impl AuthyClient {
     }
 
     #[instrument(skip(self))]
-    pub async fn sync_time_with_server(&mut self) -> Result<()> {
+    async fn sync_time_with_server(&mut self) -> Result<()> {
         let device = self.get_device()?;
         let url = format!("{}/devices/{}/auth_sync", self.url, device.id);
         let time = get_time(self.time_sync.as_ref());
@@ -369,7 +414,7 @@ impl AuthyClient {
     }
 
     #[instrument]
-    pub async fn list_authenticator_tokens(&self) -> Result<Vec<AuthenticatorToken>> {
+    async fn list_authenticator_tokens(&self) -> Result<Vec<AuthenticatorToken>> {
         let device = self.get_device()?;
 
         let url = format!(
@@ -393,16 +438,8 @@ impl AuthyClient {
         Ok(data.authenticator_tokens)
     }
 
-    pub fn initialize_authenticator_token(
-        &self,
-        authentication_token: &mut AuthenticatorToken,
-    ) -> Result<()> {
-        authentication_token.initialize_token(&self.backup_password);
-        Ok(())
-    }
-
     #[instrument(skip(self, authentication_token), fields(token_name = authentication_token.name.as_str()))]
-    pub async fn get_otp_token(&self, authentication_token: &AuthenticatorToken) -> Result<String> {
+    async fn get_otp_token(&self, authentication_token: &AuthenticatorToken) -> Result<String> {
         let seed = authentication_token.decrypt_seed()?;
         calculate_token(&seed, authentication_token.digits, self.time_sync.as_ref()).map_err(
             |source| MambembeError::FailedToCalculateToken {
@@ -410,23 +447,5 @@ impl AuthyClient {
                 source,
             },
         )
-    }
-
-    /// Not used right now but maybe in the future
-    #[allow(dead_code)]
-    fn get_private_key(&self) -> Result<&RSAPrivateKey> {
-        self.parsed_private_key
-            .as_ref()
-            .ok_or(MambembeError::PrivateKeyNotFetched)
-    }
-
-    fn get_authy_id(&self) -> Result<AuthyId> {
-        self.authy_id.ok_or(MambembeError::DeviceNotInitialized)
-    }
-
-    fn get_device(&self) -> Result<&Device> {
-        self.device
-            .as_ref()
-            .ok_or(MambembeError::DeviceNotInitialized)
     }
 }

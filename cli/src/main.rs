@@ -12,6 +12,7 @@ use tracing::{info, instrument};
 
 use mambembe_keyring::MambembeKeyringError;
 use mambembe_lib::{
+    client::AuthyClientApi,
     models::{
         AuthenticatorToken, CheckRegistrationStatus, CheckStatusResponse, RegisterDeviceResponse,
     },

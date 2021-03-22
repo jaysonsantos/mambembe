@@ -2547,6 +2547,7 @@ name = "mambembe-lib"
 version = "0.1.0"
 dependencies = [
  "aes",
+ "async-trait",
  "block-modes",
  "data-encoding",
  "dotenv",

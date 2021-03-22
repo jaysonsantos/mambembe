@@ -36,6 +36,7 @@ fn get_test_client(url: &str) -> AuthyClient {
     serde_json::from_value(client_config).unwrap()
 }
 
+#[cfg(docker)]
 #[tokio::test]
 async fn list_authenticator_tokens() {
     let stub = start_stub_server().await;
@@ -46,6 +47,7 @@ async fn list_authenticator_tokens() {
     assert_eq!(lastpass.name, "LastPass");
 }
 
+#[cfg(docker)]
 #[tokio::test]
 async fn check_current_device() {
     let stub = start_stub_server().await;
@@ -53,6 +55,7 @@ async fn check_current_device() {
     client.check_current_device_keys().await.unwrap();
 }
 
+#[cfg(docker)]
 #[tokio::test]
 async fn check_current_device_keys() {
     let stub = start_stub_server().await;
@@ -60,6 +63,7 @@ async fn check_current_device_keys() {
     client.check_current_device().await.unwrap();
 }
 
+#[cfg(docker)]
 #[tokio::test]
 async fn register_flow() {
     let stub = start_stub_server().await;
