@@ -2,3 +2,4 @@
 /lib/Cargo.lock
 /.env
 device.json
+.cache/
