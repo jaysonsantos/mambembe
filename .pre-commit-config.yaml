@@ -1,0 +1,29 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/andreoliwa/nitpick
+    # TODO: pin to a tag when a new nitpick version is released
+    # https://github.com/andreoliwa/nitpick/commit/5e98e5fcda32d1fe40939bf3abd4e6e5da00e9ba
+    rev: 5e98e5fcda32d1fe40939bf3abd4e6e5da00e9ba
+    hooks:
+      - id: nitpick-run
+        # To display verbose logs on nitpick run here:
+        # https://results.pre-commit.ci/repo/github/348830961
+        # TODO: remove this flag once the connection error is solved
+        args: ["--verbose"]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.2.1
+    hooks:
+      - id: prettier
+        stages: [commit]
+  - repo: https://github.com/commitizen-tools/commitizen
+    hooks:
+      - id: commitizen
+        stages:
+          - commit-msg
+    rev: v2.16.0
