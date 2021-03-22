@@ -71,6 +71,10 @@ pub trait AuthyClientApi {
     async fn sync_time_with_server(&mut self) -> Result<()>;
     async fn list_authenticator_tokens(&self) -> Result<Vec<AuthenticatorToken>>;
     async fn get_otp_token(&self, authentication_token: &AuthenticatorToken) -> Result<String>;
+    fn initialize_authenticator_token(
+        &self,
+        authentication_token: &mut AuthenticatorToken,
+    ) -> Result<()>;
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -140,14 +144,6 @@ impl AuthyClient {
         self.device
             .as_ref()
             .ok_or(MambembeError::DeviceNotInitialized)
-    }
-
-    fn initialize_authenticator_token(
-        &self,
-        authentication_token: &mut AuthenticatorToken,
-    ) -> Result<()> {
-        authentication_token.initialize_token(&self.backup_password);
-        Ok(())
     }
 }
 
@@ -447,5 +443,13 @@ impl AuthyClientApi for AuthyClient {
                 source,
             },
         )
+    }
+
+    fn initialize_authenticator_token(
+        &self,
+        authentication_token: &mut AuthenticatorToken,
+    ) -> Result<()> {
+        authentication_token.initialize_token(&self.backup_password);
+        Ok(())
     }
 }
