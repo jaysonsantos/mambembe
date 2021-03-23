@@ -1,5 +1,6 @@
 use lazy_static::lazy_static;
 use mambembe_lib::{
+    client::AuthyClientApi,
     models::{CheckRegistrationStatus, CheckStatusResponse, RegisterDeviceResponse},
     AuthyClient,
 };

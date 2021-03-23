@@ -6,7 +6,10 @@ use iced::{
     Application, Clipboard, Column, Command, Container, HorizontalAlignment, Length, Settings,
     Text, TextInput,
 };
-use mambembe_lib::{models::AuthenticatorToken, AuthyClient, MambembeError, Result as LibResult};
+use mambembe_lib::{
+    client::AuthyClientApi, models::AuthenticatorToken, AuthyClient, MambembeError,
+    Result as LibResult,
+};
 
 struct MambembeDesktop {
     authy_client: Option<Arc<Mutex<AuthyClient>>>,
