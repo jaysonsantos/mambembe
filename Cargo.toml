@@ -1,2 +1,2 @@
 [workspace]
-members = ["cli", "desktop-client", "lib", "keyring", "stub_server"]
+members = ["cli", "lib", "keyring", "stub_server"]
