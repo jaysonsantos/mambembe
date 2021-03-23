@@ -1,0 +1,25 @@
+{
+  "request": {
+    "urlPathPattern": "/json/users/[0-9]+/devices/registration/start",
+    "method": "POST",
+    "headers": {
+      "Content-Type": {
+        "equalTo": "application/x-www-form-urlencoded"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "matches": "api_key=[0-9a-z]+&locale=en-US&via=push&signature=[0-9a-z]+&device_app=authy&device_name=test-device"
+      }
+    ]
+  },
+  "response": {
+    "jsonBody": {
+      "approval_pin": 1,
+      "message": "A request was sent to your other devices.",
+      "provider": "push",
+      "request_id": "603a4d9e613cafeac8e36234d",
+      "success": true
+    }
+  }
+}

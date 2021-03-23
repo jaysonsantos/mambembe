@@ -1,0 +1,26 @@
+{
+  "request": {
+    "urlPathPattern": "/json/devices/(?<deviceId>[0-9]+)/soft_tokens/(?<deviceIdAgain>[0-9]+)/check",
+    "method": "GET",
+    "queryParameters": {
+      "api_key": {
+        "matches": "[0-9a-z-]+"
+      },
+      "locale": {
+        "equalTo": "en-US"
+      },
+      "sha": {
+        "equalTo": "6fc3246b7eee41dae9face2e890657775a5558bd2fc78960b88c3b71fe1ea584"
+      }
+    }
+  },
+  "response": {
+    "jsonBody": {
+      "authy_id": 12345,
+      "devices_count": 1,
+      "force_ott": true,
+      "message": "active",
+      "success": true
+    }
+  }
+}

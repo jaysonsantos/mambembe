@@ -4,7 +4,7 @@ use mambembe_lib::{
     models::{CheckRegistrationStatus, CheckStatusResponse, RegisterDeviceResponse},
     AuthyClient,
 };
-use mambembe_stub_server::start_stub_server;
+use mambembe_stub_server::start_wiremock;
 use serde_json::{json, Value};
 use std::time::Duration;
 use tokio::time::sleep;
@@ -14,9 +14,10 @@ lazy_static! {
         "device_name": "test",
         "signature": "abcde",
         "authy_id": 1234,
+        "backup_password": "abc",
         "device": {
             "id": 12334,
-            "secret_seed": "sdasa",
+            "secret_seed": "1bcc2b0a43e94a90916a04079190af40",
         }
     });
 }
@@ -27,12 +28,12 @@ lazy_static! {
 //     client.check_current_device().await.unwrap();
 // }
 
-fn get_test_client(url: &str) -> AuthyClient {
+fn get_test_client(wiremock_url: &str) -> AuthyClient {
     let mut client_config = CLIENT_CONFIG.clone();
-    client_config
-        .as_object_mut()
-        .unwrap()
-        .insert("url".to_string(), Value::String(url.to_string()));
+    client_config.as_object_mut().unwrap().insert(
+        "url".to_string(),
+        Value::String(format!("{}/json", wiremock_url)),
+    );
 
     serde_json::from_value(client_config).unwrap()
 }
@@ -40,8 +41,8 @@ fn get_test_client(url: &str) -> AuthyClient {
 #[cfg(docker)]
 #[tokio::test]
 async fn list_authenticator_tokens() {
-    let stub = start_stub_server().await;
-    let client = get_test_client(&stub.url);
+    let url = start_wiremock().await.unwrap();
+    let client = get_test_client(&url);
     let tokens = client.list_authenticator_tokens().await.unwrap();
     assert_eq!(tokens.len(), 2);
     let lastpass = &tokens[0];
@@ -51,25 +52,26 @@ async fn list_authenticator_tokens() {
 #[cfg(docker)]
 #[tokio::test]
 async fn check_current_device() {
-    let stub = start_stub_server().await;
-    let client = get_test_client(&stub.url);
+    let url = start_wiremock().await.unwrap();
+    let client = get_test_client(&url);
     client.check_current_device_keys().await.unwrap();
 }
 
 #[cfg(docker)]
 #[tokio::test]
 async fn check_current_device_keys() {
-    let stub = start_stub_server().await;
-    let client = get_test_client(&stub.url);
+    let url = start_wiremock().await.unwrap();
+    let client = get_test_client(&url);
     client.check_current_device().await.unwrap();
 }
 
 #[cfg(docker)]
 #[tokio::test]
 async fn register_flow() {
-    let stub = start_stub_server().await;
+    let url = start_wiremock().await.unwrap();
 
-    let mut client = AuthyClient::with_url(&stub.url, "test-device", "1234").unwrap();
+    let mut client =
+        AuthyClient::with_url(&format!("{}/json", url), "test-device", "1234").unwrap();
     assert_eq!(
         CheckStatusResponse::RegisterDevice,
         client.check_user_status("123456").await.unwrap()

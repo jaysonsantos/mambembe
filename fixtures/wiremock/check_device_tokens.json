@@ -1,0 +1,30 @@
+{
+  "request": {
+    "urlPathPattern": "/json/users/(?<authyId>[0-9]+)/devices/(?<deviceIid>[0-9]+)",
+    "method": "GET",
+    "queryParameters": {
+      "api_key": {
+        "matches": "[0-9a-z-]+"
+      },
+      "otp1": {
+        "matches": "[0-9]+"
+      },
+      "otp2": {
+        "matches": "[0-9]+"
+      },
+      "otp3": {
+        "matches": "[0-9]+"
+      }
+    }
+  },
+  "response": {
+    "jsonBody": {
+      "cellphone": "17172720",
+      "country_code": 49,
+      "email": "fakeuser@gmail.com",
+      "multidevice_enabled": true,
+      "multidevices_enabled": true,
+      "success": true
+    }
+  }
+}
