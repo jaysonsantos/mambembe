@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  wiremock:
+    image: "rodolpheche/wiremock:2.27.2"
+    ports:
+      - "8080"
+    volumes:
+      - "./fixtures/wiremock:/home/wiremock/mappings"
+    command: --verbose --global-response-templating

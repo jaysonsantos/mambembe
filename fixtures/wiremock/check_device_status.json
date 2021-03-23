@@ -1,0 +1,26 @@
+{
+  "request": {
+    "urlPathPattern": "/json/users/[0-9-]+/status",
+    "method": "GET",
+    "queryParameters": {
+      "uuid": {
+        "matches": "[0-9a-z-]+"
+      },
+      "api_key": {
+        "matches": "[0-9a-z-]+"
+      },
+      "locale": {
+        "equalTo": "en-US"
+      }
+    }
+  },
+  "response": {
+    "jsonBody": {
+      "authy_id": 12345,
+      "devices_count": 1,
+      "force_ott": true,
+      "message": "active",
+      "success": true
+    }
+  }
+}

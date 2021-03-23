@@ -1,0 +1,59 @@
+{
+  "request": {
+    "urlPathPattern": "/json/users/[0-9]+/authenticator_tokens",
+    "method": "GET",
+    "queryParameters": {
+      "api_key": {
+        "matches": "[0-9a-z-]+"
+      },
+      "locale": {
+        "equalTo": "en-US"
+      },
+      "apps": {
+        "equalTo": ""
+      },
+      "device_id": {
+        "matches": "[0-9]+"
+      },
+      "otp1": {
+        "matches": "[0-9]+"
+      },
+      "otp2": {
+        "matches": "[0-9]+"
+      },
+      "otp3": {
+        "matches": "[0-9]+"
+      }
+    }
+  },
+  "response": {
+    "jsonBody": {
+      "authenticator_tokens": [
+        {
+          "account_type": "lastpass",
+          "digits": 6,
+          "encrypted_seed": "ONQWIZTTMFSHGYLEMFSAU===",
+          "issuer": null,
+          "logo": null,
+          "name": "LastPass",
+          "original_name": "LastPass",
+          "password_timestamp": 1435323862,
+          "salt": "dsdsad",
+          "unique_id": "3213213"
+        },
+        {
+          "account_type": "digitalocean",
+          "digits": 6,
+          "encrypted_seed": "ONQWIZTTMFSHGYLEMFSAU",
+          "issuer": null,
+          "logo": null,
+          "name": "Digital Ocean",
+          "original_name": "DigitalOcean",
+          "password_timestamp": 1435323862,
+          "salt": "dsadsad",
+          "unique_id": "3213213"
+        }
+      ]
+    }
+  }
+}

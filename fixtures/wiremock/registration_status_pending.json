@@ -1,0 +1,29 @@
+{
+  "scenarioName": "Device Registration",
+  "requiredScenarioState": "Started",
+  "newScenarioState": "Pending",
+  "request": {
+    "urlPathPattern": "/json/users/[0-9]+/devices/registration/[0-9a-z]+/status",
+    "method": "GET",
+    "queryParameters": {
+      "signature": {
+        "matches": "[0-9a-z-]+"
+      },
+      "api_key": {
+        "matches": "[0-9a-z-]+"
+      },
+      "locale": {
+        "equalTo": "en-US"
+      }
+    }
+  },
+  "response": {
+    "jsonBody": {
+      "message": {
+        "request_status": "Request Status."
+      },
+      "status": "pending",
+      "success": true
+    }
+  }
+}

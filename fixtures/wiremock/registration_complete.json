@@ -1,0 +1,27 @@
+{
+  "request": {
+    "urlPathPattern": "/json/users/[0-9]+/devices/registration/complete",
+    "method": "POST",
+    "headers": {
+      "Content-Type": {
+        "equalTo": "application/x-www-form-urlencoded"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "matches": "api_key=[0-9a-z]+&locale=en-US&pin=[0-9]+&device_app=authy&device_name=test-device&uuid=[0-9a-z]+"
+      }
+    ]
+  },
+  "response": {
+    "jsonBody": {
+      "authy_id": 12345,
+      "device": {
+        "api_key": "not important here",
+        "id": 321321,
+        "reinstall": false,
+        "secret_seed": "48bebacafe22334beba47dcafe37252a"
+      }
+    }
+  }
+}
