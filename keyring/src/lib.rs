@@ -18,20 +18,20 @@ const TOKENS: Keyring = Keyring::new(SERVICE_NAME, "tokens.json");
 
 type Result<T> = result::Result<T, MambembeKeyringError>;
 
-#[derive(Debug)]
-pub struct KeyringWrapper(Arc<Mutex<KeyringError>>);
+// #[derive(Debug)]
+// pub struct KeyringWrapper(Arc<KeyringError>);
 
-impl StdError for KeyringWrapper {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
-        todo!()
-    }
-}
+// impl StdError for KeyringWrapper {
+//     fn source(&self) -> Option<&(dyn StdError + 'static)> {
+//         Some(&*self.0.clone())
+//     }
+// }
 
-impl Display for KeyringWrapper {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.0.lock().unwrap().fmt(f)
-    }
-}
+// impl Display for KeyringWrapper {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         self.0.fmt(f)
+//     }
+// }
 
 #[derive(Debug, Error)]
 pub enum MambembeKeyringError {
@@ -40,7 +40,7 @@ pub enum MambembeKeyringError {
     #[error("deserialization error")]
     DeserializationError(#[from] serde_json::Error),
     #[error("unknown keyring backend error")]
-    UnknownBackendError(#[from] KeyringWrapper),
+    UnknownBackendError(#[from] KeyringError),
 }
 
 pub trait Data<T> {
@@ -66,11 +66,7 @@ where
     let data = match T::get_keyring().get_password() {
         Ok(data) => data,
         Err(KeyringError::NoPasswordFound) => return Err(MambembeKeyringError::NoPasswordFound),
-        Err(err) => {
-            return Err(MambembeKeyringError::UnknownBackendError(KeyringWrapper(
-                Arc::new(Mutex::new(err)),
-            )))
-        }
+        Err(err) => return Err(MambembeKeyringError::UnknownBackendError(err)),
     };
     Ok(from_str(&data)?)
 }
@@ -80,8 +76,8 @@ where
     T: Serialize + Data<T>,
 {
     let data = to_string_pretty(data)?;
-    T::get_keyring().set_password(&data).map_err(|e| {
-        MambembeKeyringError::UnknownBackendError(KeyringWrapper(Arc::new(Mutex::new(e))))
-    })?;
+    T::get_keyring()
+        .set_password(&data)
+        .map_err(|e| MambembeKeyringError::UnknownBackendError(e))?;
     Ok(())
 }
