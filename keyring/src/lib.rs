@@ -1,11 +1,18 @@
+#[cfg(feature = "without-keyring")]
+mod local;
+
 use std::result;
 
+#[cfg(feature = "with-keyring")]
 use keyring::{Keyring, KeyringError};
 use serde::{de::DeserializeOwned, Serialize};
 use serde_json::{from_str, to_string_pretty};
 use thiserror::Error;
 
 use mambembe_lib::{models::AuthenticatorToken, AuthyClient};
+
+#[cfg(feature = "without-keyring")]
+use crate::local::{Keyring, KeyringError};
 
 const SERVICE_NAME: &str = "mambembe";
 const DEVICES: Keyring = Keyring::new(SERVICE_NAME, "devices.json");

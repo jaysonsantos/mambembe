@@ -5,11 +5,16 @@ authors = ["Jayson Reis <santosdosreis@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-keyring = { git = "https://github.com/jaysonsantos/keyring-rs", branch = "my-changes" }
+directories = { version = "3.0.1", optional = true }
+keyring = { git = "https://github.com/jaysonsantos/keyring-rs", branch = "my-changes", optional = true }
 lazy_static = "1.4.0"
 mambembe-lib = { path = "../lib" }
 serde = "1.0.125"
 serde_json = "1.0.64"
 thiserror = "1.0.24"
+
+[features]
+default = ["with-keyring"]
+with-keyring = ["keyring"]
+without-keyring = ["directories"]
