@@ -1498,6 +1498,7 @@ dependencies = [
  "structopt",
  "tokio",
  "tracing",
+ "tracing-error",
  "tracing-subscriber",
 ]
 
@@ -1554,7 +1555,6 @@ dependencies = [
  "tide",
  "tokio",
  "tracing",
- "url",
 ]
 
 [[package]]

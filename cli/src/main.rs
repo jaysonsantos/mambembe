@@ -9,6 +9,8 @@ use tokio::{
     time::sleep,
 };
 use tracing::{info, instrument};
+use tracing_error::ErrorLayer;
+use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
 use mambembe_keyring::MambembeKeyringError;
 use mambembe_lib::{
@@ -34,10 +36,27 @@ enum Config {
     },
 }
 
+pub fn setup_error_handlers() -> Result<()> {
+    if tracing::dispatcher::has_been_set() {
+        return Ok(());
+    }
+    let error_layer = ErrorLayer::default();
+    let filter_layer = EnvFilter::try_from_default_env().or_else(|_| EnvFilter::try_new("info"))?;
+    let fmt_layer = fmt::layer().with_target(false);
+
+    tracing_subscriber::Registry::default()
+        .with(error_layer)
+        .with(filter_layer)
+        .with(fmt_layer)
+        .try_init()?;
+
+    color_eyre::install()?;
+    Ok(())
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt::init();
-    color_eyre::install()?;
+    setup_error_handlers()?;
     work().await?;
     Ok(())
 }

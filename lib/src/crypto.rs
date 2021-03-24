@@ -1,10 +1,20 @@
 use aes::Aes256;
 use block_modes::{block_padding::NoPadding, BlockMode, Cbc};
-use data_encoding::BASE64;
+use data_encoding::Encoding;
+use lazy_static::lazy_static;
 
 use crate::error::InternalResult;
 
 type Aes256Cbc = Cbc<Aes256, NoPadding>;
+
+lazy_static! {
+    static ref BASE64: Encoding = {
+        let mut spec = data_encoding::BASE64.specification();
+        spec.ignore = "\r\n".into();
+        spec.encoding()
+            .expect("failed to build base64 encoder/decoder")
+    };
+}
 
 /// This will return copied data so the lib does not know how to handle
 /// decryption.
@@ -39,5 +49,26 @@ fn ascii_uppercase(chr: u8) -> u8 {
         chr - 32
     } else {
         chr
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::BASE64;
+
+    #[test]
+    fn test_base64_encoder_decoder() {
+        let expected = "hello world";
+        let line_break = "aGVsbG8g\nd29ybGQ=";
+        let windows_line_break = "aGVsbG8g\r\nd29ybGQ=";
+        let cases = [line_break, windows_line_break];
+
+        for case in &cases {
+            let decoded = BASE64
+                .decode(case.as_bytes())
+                .expect(&format!("data {:?} is not valid base64", case));
+            let parsed = String::from_utf8_lossy(&decoded);
+            assert_eq!(&parsed, expected);
+        }
     }
 }
