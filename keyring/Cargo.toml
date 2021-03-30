@@ -10,6 +10,6 @@ edition = "2018"
 keyring = { git = "https://github.com/jaysonsantos/keyring-rs", branch = "my-changes" }
 lazy_static = "1.4.0"
 mambembe-lib = { path = "../lib" }
-serde = "1.0.124"
+serde = "1.0.125"
 serde_json = "1.0.64"
 thiserror = "1.0.24"
