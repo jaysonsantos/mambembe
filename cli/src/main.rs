@@ -143,7 +143,7 @@ async fn get_client_from_file() -> Result<AuthyClient> {
         .wrap_err("failed to get client from a file")
 }
 
-#[instrument]
+#[instrument(skip(backup_password))]
 async fn get_new_client(
     phone: &str,
     device_name: &str,
