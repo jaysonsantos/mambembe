@@ -55,3 +55,12 @@ jobs:
           tag_name: ${{ env.REVISION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PERSONAL_TOKEN }}
+  ci-success:
+    name: ci
+    if: ${{ success() }}
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: CI succeeded
+        run: exit 0
