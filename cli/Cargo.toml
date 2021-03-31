@@ -19,4 +19,6 @@ tracing-error = "0.1.2"
 tracing-subscriber = { version = "0.2.17", features = ["fmt"] }
 
 [features]
+default = ["with-keyring"]
+with-keyring = ["mambembe-keyring/with-keyring"]
 without-keyring = ["mambembe-keyring/without-keyring"]
