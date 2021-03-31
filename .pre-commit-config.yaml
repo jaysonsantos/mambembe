@@ -27,3 +27,12 @@ repos:
         stages:
           - commit-msg
     rev: v2.16.0
+
+  - repo: local
+    hooks:
+      - id: deny-openssl
+        name: Check for openssl dependencies
+        description: Disable any openssl dependency as it makes harder to make static builds
+        entry: openssl.+
+        language: pygrep
+        files: Cargo.lock
