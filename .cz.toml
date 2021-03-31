@@ -1,5 +1,11 @@
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1.1"
+version = "0.1.0"
 tag_format = "v$version"
-version_files = ["Cargo.toml:version", "Cargo.lock:version:there-i-fixed-it"]
+version_files = [
+    "Cargo.lock:mambembe.+\nversion",
+    "lib/Cargo.toml",
+    "cli/Cargo.toml",
+    "desktop-client/Cargo.toml",
+    "keyring/Cargo.toml"
+]
