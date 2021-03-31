@@ -1,16 +1,17 @@
 use std::num::NonZeroU32;
 
-use ring::pbkdf2;
+use hmac::Hmac;
+use pbkdf2::pbkdf2;
+use sha1::Sha1;
 
 const AUTHY_ITERATIONS: Option<NonZeroU32> = NonZeroU32::new(1000);
 
 pub(crate) fn derive_key(backup_password: &str, salt: &str) -> Vec<u8> {
     let mut derived_key = [0u8; 32];
-    pbkdf2::derive(
-        pbkdf2::PBKDF2_HMAC_SHA1,
-        AUTHY_ITERATIONS.unwrap(),
-        salt.as_bytes(),
+    pbkdf2::<Hmac<Sha1>>(
         backup_password.as_bytes(),
+        salt.as_bytes(),
+        AUTHY_ITERATIONS.unwrap().into(),
         &mut derived_key,
     );
 

@@ -1555,17 +1555,20 @@ dependencies = [
  "block-modes",
  "data-encoding",
  "dotenv",
+ "hmac 0.10.1",
  "itertools",
  "json",
  "lazy_static",
  "mambembe-stub-server",
  "md5",
+ "pbkdf2",
  "rand 0.8.3",
  "reqwest",
  "ring",
  "rsa",
  "serde",
  "serde_json",
+ "sha-1 0.9.4",
  "sha2 0.9.3",
  "slauth",
  "thiserror",
@@ -1907,6 +1910,15 @@ dependencies = [
  "redox_syscall 0.2.5",
  "smallvec",
  "winapi",
+]
+
+[[package]]
+name = "pbkdf2"
+version = "0.7.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf916dd32dd26297907890d99dc2740e33f6bd9073965af4ccff2967962f5508"
+dependencies = [
+ "crypto-mac 0.10.0",
 ]
 
 [[package]]
@@ -2497,6 +2509,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha-1"
+version = "0.9.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dfebf75d25bd900fd1e7d11501efab59bc846dbc76196839663e6637bba9f25f"
+dependencies = [
+ "block-buffer 0.9.0",
+ "cfg-if 1.0.0",
+ "cpuid-bool 0.1.2",
+ "digest 0.9.0",
+ "opaque-debug 0.3.0",
+]
+
+[[package]]
 name = "sha1"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2591,7 +2616,7 @@ dependencies = [
  "hex",
  "hmac 0.7.1",
  "js-sys",
- "sha-1",
+ "sha-1 0.8.2",
  "sha2 0.8.2",
  "time 0.2.26",
  "wasm-bindgen",
