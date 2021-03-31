@@ -19,7 +19,7 @@ jobs:
         os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
     env:
-      AUTHY_API_KEY: "${secrets.AUTHY_API_KEY}"
+      AUTHY_API_KEY: anything-here
     steps:
       - name: Install dependencies
         if: "${{ matrix.os  == 'ubuntu-latest'}}"
