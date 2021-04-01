@@ -117,11 +117,11 @@ def bundle():
 
     for file_name in glob(os.path.join(install_dir, "**", "*")):
         split_file_name, suffix = os.path.splitext(os.path.basename(file_name))
-        new_file_name = f"{split_file_name}-{feature}-{tag_name}-{target}{suffix}"
-        new_file_destination = os.path.join(collection_folder, new_file_name)
-        print(f"Copying file {file_name} to {new_file_destination}")
-        os.renames(file_name, new_file_destination)
-        compressed_destination = compress(new_file_destination)
+        binary_final_destination = os.path.join(collection_folder, os.path.basename(file_name))
+        compressed_file_basename = f"{split_file_name}-{feature}-{tag_name}-{target}{suffix}"
+        print(f"Moving file {file_name} to {binary_final_destination}")
+        os.renames(file_name, binary_final_destination)
+        compressed_destination = compress(binary_final_destination, compressed_file_basename)
         with open(f"{compressed_destination}.SHA256SUM", "wb") as f:
             checksum = calculate_checksum(compressed_destination)
             f.write(f"{checksum} {os.path.basename(compressed_destination)}\n".encode())
@@ -129,16 +129,16 @@ def bundle():
     check_call([ghr_path, tag_name, collection_folder])
 
 
-def compress(file_name):
+def compress(file_name, destination_file_name):
     directory = os.path.dirname(file_name)
-    basename = os.path.basename(file_name)
+    binary = os.path.basename(file_name)
 
     if get_running_os() == "ubuntu":
-        output_file_name = f"{basename}.tar.gz"
-        check_call(["tar", "czvf", output_file_name, basename], cwd=directory)
+        output_file_name = f"{destination_file_name}.tar.gz"
+        check_call(["tar", "czvf", output_file_name, binary], cwd=directory)
     else:
-        output_file_name = f"{basename}.zip"
-        check_call(["7z", "a", output_file_name, basename], cwd=directory)
+        output_file_name = f"{destination_file_name}.zip"
+        check_call(["7z", "a", output_file_name, binary], cwd=directory)
 
     os.remove(file_name)
 
