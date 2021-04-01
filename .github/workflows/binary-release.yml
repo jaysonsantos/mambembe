@@ -1,0 +1,61 @@
+name: binary-release
+
+on:
+  release:
+    types:
+      - created
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    env:
+      INSTALL_DIR: install_dir
+      AUTHY_API_KEY: "${{ secrets.AUTHY_API_KEY }}"
+    strategy:
+      matrix:
+        feature:
+          - "with-keyring"
+          - "without-keyring"
+        target:
+          - "x86_64-unknown-linux-gnu"
+          - "x86_64-pc-windows-msvc"
+          - "x86_64-apple-darwin"
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install dependencies
+        if: "${{ matrix.os  == 'ubuntu-latest'}}"
+        run: sudo apt install libdbus-1-dev
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - id: tag
+        name: Prepare the ground
+        run: |
+          python --version
+          python .github/workflows/helpers.py output_tag ghr
+        env:
+          OS: ${{ matrix.os }}
+      - name: Build
+        shell: bash
+        run: |
+          rustup target add ${{ matrix.target }}
+          echo "Installing on ${INSTALL_DIR}"
+          cargo install --target ${{ matrix.target }} --root "${INSTALL_DIR}" --path cli
+      - name: Publish
+        run: python .github/workflows/helpers.py bundle
+        env:
+          TARGET: ${{ matrix.target }}
+          OS: ${{ matrix.os }}
+          GHR_BINARY_PATH: ${{ steps.tag.outputs.GHR_BINARY_PATH }}
+          GITHUB_TOKEN: ${{ secrets.GH_PERSONAL_TOKEN }}
+          FEATURE: ${{ matrix.feature }}
