@@ -18,11 +18,15 @@ pub(crate) fn calculate_token(
     digits: usize,
     time_sync: Option<&TimeSync>,
 ) -> InternalResult<String> {
-    let seed = BASE32.decode(seed).unwrap_or_else(|_| seed.to_vec());
+    let seed = decode_seed(seed);
     // let seed = HEXLOWER.encode(&seed);
     let time = get_time(time_sync);
     let s = build_slauth_context(&seed, digits, time / OTHERS_DEFAULT_PERIOD);
     Ok(s.gen())
+}
+
+pub(crate) fn decode_seed<T>(seed: T) -> Vec<u8> where T: AsRef<[u8]> {
+    BASE32.decode(seed.as_ref()).unwrap_or_else(|_| seed.as_ref().to_vec())
 }
 
 pub(crate) fn build_slauth_context(seed: &[u8], digits: usize, padded_time: u64) -> HOTPContext {
