@@ -39,6 +39,7 @@ enum Config {
         #[structopt(short, long, help = "output type", default_value)]
         output: Output,
     },
+    DumpSeeds,
 }
 
 pub fn setup_error_handlers() -> Result<()> {
@@ -134,6 +135,26 @@ async fn work() -> Result<()> {
                 });
             }
             output.print(output_data)?;
+        }
+        Config::DumpSeeds => {
+            let client = get_saved_client()?;
+            let mut services: Vec<AuthenticatorToken> = match mambembe_keyring::get() {
+                Ok(services) => services,
+                Err(MambembeKeyringError::NoPasswordFound) => {
+                    let services = client.list_authenticator_tokens().await?;
+                    mambembe_keyring::set(&services).unwrap();
+                    services
+                }
+                Err(err) => return Err(err.into()),
+            };
+            for service in services.iter_mut() {
+                client.initialize_authenticator_token(service)?;
+                println!(
+                    "Servie: {} Seed: {}",
+                    service.name,
+                    &service.dump_seed()?
+                );
+            }
         }
     }
 
