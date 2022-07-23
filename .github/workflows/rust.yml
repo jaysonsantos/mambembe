@@ -6,8 +6,6 @@ on:
       - main
       - staging
       - trying
-  pull_request:
-    branches: []
 
 env:
   CARGO_TERM_COLOR: always
@@ -47,7 +45,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
           changelog_increment_filename: body.md
-          custom_commitzen_install: "https://github.com/jaysonsantos/commitizen/archive/refs/heads/version-in-random-position.zip#egg=commitizen"
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
