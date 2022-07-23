@@ -16,7 +16,7 @@ json = "0.12.4"
 lazy_static = "1.4.0"
 md5 = "0.7.0"
 pbkdf2 = { version = "0.7.5", default-features = false }
-rand = "0.8.3"
+rand = "0.8.5"
 reqwest = { version = "0.11.11", default-features = false, features = ["json", "gzip", "rustls-tls"] }
 rsa = "0.4.0"
 serde = { version = "1.0.140", features = ["derive"] }
