@@ -81,7 +81,7 @@ impl AuthenticatorToken {
             .ok_or(MambembeError::AuthenticatorTokenNotInitialized)?;
 
         let data = decrypt_data(derived_key, &self.encrypted_seed).map_err(|source| {
-            MambembeError::FailedtoDecryptSeed {
+            MambembeError::FailedToDecryptSeed {
                 service_name: self.name.clone(),
                 source,
             }

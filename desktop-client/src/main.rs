@@ -30,7 +30,7 @@ enum ApplicationState {
 #[derive(Debug)]
 enum Message {
     Initialized(LibResult<AuthyClient>),
-    FailedtoInitialize(MambembeError),
+    FailedToInitialize(MambembeError),
     DeviceChecked(LibResult<()>),
     TokensFetched(LibResult<Vec<AuthenticatorToken>>),
     // InputChanged(String),

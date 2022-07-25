@@ -35,7 +35,7 @@ pub enum MambembeError {
         source: InternalError,
     },
     #[error("failed to decrypt seed for service {service_name:?}")]
-    FailedtoDecryptSeed {
+    FailedToDecryptSeed {
         service_name: String,
         source: InternalError,
     },

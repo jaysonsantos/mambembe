@@ -33,25 +33,6 @@ pub(crate) fn build_slauth_context(seed: &[u8], digits: usize, padded_time: u64)
         .build()
 }
 
-// pub(crate) fn build_slauth_context(
-//     seed: &[u8],
-//     digits: usize,
-//     period: Option<u64>,
-//     time_sync: Option<&TimeSync>,
-// ) -> TOTPContext {
-//     let (backward, forward) = time_sync
-//         .map(|t| t.get_time_offset_for_slauth())
-//         .unwrap_or((0, 0));
-
-//     TOTPBuilder::new()
-//         .algorithm(HashesAlgorithm::SHA1)
-//         .secret(seed)
-//         .period(period.unwrap_or(OTHERS_DEFAULT_PERIOD))
-//         .re_sync_parameter(backward, forward)
-//         .digits(digits)
-//         .build()
-// }
-
 pub(crate) fn calculate_future_tokens(
     seed: &[u8],
     time_sync: Option<&TimeSync>,
