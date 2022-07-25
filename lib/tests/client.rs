@@ -1,5 +1,7 @@
 #[cfg(docker)]
 mod docker {
+    use std::time::Duration;
+
     use lazy_static::lazy_static;
     use mambembe_lib::{
         client::AuthyClientApi,
@@ -8,7 +10,6 @@ mod docker {
     };
     use mambembe_stub_server::start_wiremock;
     use serde_json::{json, Value};
-    use std::time::Duration;
     use tokio::time::sleep;
 
     lazy_static! {

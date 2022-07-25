@@ -2,8 +2,10 @@ use std::sync::Arc;
 
 use rand::{thread_rng, Rng};
 use serde::Deserialize;
-use tide::{convert::json, prelude::Listener, Response, StatusCode};
-use tide::{listener::ToListener, Request as TideRequest};
+use tide::{
+    convert::json, listener::ToListener, prelude::Listener, Request as TideRequest, Response,
+    StatusCode,
+};
 use tokio::{
     sync::{oneshot, Mutex},
     task::{self, JoinHandle},

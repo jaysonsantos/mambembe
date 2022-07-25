@@ -1,6 +1,8 @@
 use data_encoding::BASE64;
-use reqwest::header::{HeaderMap, HeaderValue};
-use reqwest::Client;
+use reqwest::{
+    header::{HeaderMap, HeaderValue},
+    Client,
+};
 use rsa::RSAPrivateKey;
 use tracing::debug;
 

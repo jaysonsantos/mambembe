@@ -5,11 +5,10 @@ use std::result;
 
 #[cfg(feature = "with-keyring")]
 use keyring::{Keyring, KeyringError};
+use mambembe_lib::{models::AuthenticatorToken, AuthyClient};
 use serde::{de::DeserializeOwned, Serialize};
 use serde_json::{from_str, to_string_pretty};
 use thiserror::Error;
-
-use mambembe_lib::{models::AuthenticatorToken, AuthyClient};
 
 #[cfg(feature = "without-keyring")]
 use crate::local::{Keyring, KeyringError};

@@ -2,6 +2,14 @@ use std::{process::exit, time::Duration};
 
 use color_eyre::{eyre::Context, Result};
 use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
+use mambembe_keyring::MambembeKeyringError;
+use mambembe_lib::{
+    client::AuthyClientApi,
+    models::{
+        AuthenticatorToken, CheckRegistrationStatus, CheckStatusResponse, RegisterDeviceResponse,
+    },
+    AuthyClient,
+};
 use structopt::StructOpt;
 use tokio::{
     io,
@@ -11,15 +19,6 @@ use tokio::{
 use tracing::{info, instrument};
 use tracing_error::ErrorLayer;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
-
-use mambembe_keyring::MambembeKeyringError;
-use mambembe_lib::{
-    client::AuthyClientApi,
-    models::{
-        AuthenticatorToken, CheckRegistrationStatus, CheckStatusResponse, RegisterDeviceResponse,
-    },
-    AuthyClient,
-};
 
 #[derive(Debug, StructOpt)]
 enum Config {

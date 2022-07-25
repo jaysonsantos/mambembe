@@ -8,5 +8,7 @@ mod password;
 mod tokens;
 mod utils;
 
-pub use crate::client::AuthyClient;
-pub use crate::error::{MambembeError, Result};
+pub use crate::{
+    client::AuthyClient,
+    error::{MambembeError, Result},
+};
