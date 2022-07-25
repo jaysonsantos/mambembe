@@ -3,7 +3,8 @@ use reqwest::{
     header::{HeaderMap, HeaderValue},
     Client,
 };
-use rsa::RSAPrivateKey;
+use rsa::pkcs1::DecodeRsaPrivateKey;
+use rsa::RsaPrivateKey;
 use tracing::debug;
 
 use crate::api_models::AuthyApiError;
@@ -60,10 +61,10 @@ pub(crate) async fn check_api_errors(response: reqwest::Response) -> Result<reqw
     }
 }
 
-pub(crate) fn parse_private_key(key: &str) -> Result<RSAPrivateKey> {
+pub(crate) fn parse_private_key(key: &str) -> Result<RsaPrivateKey> {
     let key: String = key.lines().filter(|l| !l.starts_with("-")).collect();
     let decoded = BASE64.decode(key.as_bytes()).unwrap();
 
-    let private_key = RSAPrivateKey::from_pkcs1(&decoded)?;
+    let private_key = RsaPrivateKey::from_pkcs1_der(&decoded)?;
     Ok(private_key)
 }

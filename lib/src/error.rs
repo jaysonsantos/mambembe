@@ -26,7 +26,7 @@ pub enum MambembeError {
         source: reqwest::Error,
     },
     #[error("private key error")]
-    PrivateKeyError(#[from] rsa::errors::Error),
+    PrivateKeyError(#[from] rsa::pkcs1::Error),
     #[error("token not initialized")]
     AuthenticatorTokenNotInitialized,
     #[error("failed to calculate token for service {service_name:?}")]

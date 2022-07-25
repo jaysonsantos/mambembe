@@ -3,7 +3,7 @@ use std::fs;
 use async_trait::async_trait;
 use rand::{thread_rng, Rng};
 use reqwest::Client;
-use rsa::RSAPrivateKey;
+use rsa::RsaPrivateKey;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tracing::{debug, instrument};
@@ -89,7 +89,7 @@ pub struct AuthyClient {
     private_key: Option<String>,
     backup_password: String,
     #[serde(skip)]
-    parsed_private_key: Option<RSAPrivateKey>,
+    parsed_private_key: Option<RsaPrivateKey>,
     #[serde(skip)]
     http_client: Client,
 }
@@ -130,7 +130,7 @@ impl AuthyClient {
 
     /// Not used right now but maybe in the future
     #[allow(dead_code)]
-    fn get_private_key(&self) -> Result<&RSAPrivateKey> {
+    fn get_private_key(&self) -> Result<&RsaPrivateKey> {
         self.parsed_private_key
             .as_ref()
             .ok_or(MambembeError::PrivateKeyNotFetched)
