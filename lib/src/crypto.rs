@@ -36,24 +36,17 @@ pub(crate) fn decrypt_data(key: &[u8], data: &str) -> InternalResult<Vec<u8>> {
         .checked_sub(padding_length)
         .unwrap_or_else(|| output.len());
 
-    let without_padding = output[0..content_size]
-        .iter()
-        .map(|chr| ascii_uppercase(*chr))
-        .collect::<Vec<u8>>();
+    let without_padding = &output[0..content_size];
 
-    Ok(without_padding)
-}
-
-fn ascii_uppercase(chr: u8) -> u8 {
-    if chr >= 97 && chr <= 122 {
-        chr - 32
-    } else {
-        chr
-    }
+    Ok(without_padding.to_vec())
 }
 
 #[cfg(test)]
 mod tests {
+    use block_modes::BlockMode;
+
+    use crate::crypto::{Aes256Cbc, decrypt_data};
+    use crate::password::derive_key;
     use super::BASE64;
 
     #[test]
@@ -70,5 +63,24 @@ mod tests {
             let parsed = String::from_utf8_lossy(&decoded);
             assert_eq!(&parsed, expected);
         }
+    }
+
+    #[cfg(test)]
+    fn encrypt_data(key: &[u8], data: &[u8]) -> String {
+        let iv = [0u8; 16];
+        let cipher = Aes256Cbc::new_var(key, &iv).unwrap();
+        let mut buffer = data.to_vec();
+        let len = buffer.len();
+        let encrypted = cipher.encrypt(&mut buffer, len).unwrap();
+        BASE64.encode(encrypted)
+    }
+
+    #[test]
+    fn test_decrypt_data() {
+        let key = derive_key("123456", "salty");
+        let data_to_encrypt = b"my secret seed01";
+        let encrypted = encrypt_data(&key, data_to_encrypt);
+        let decrypted = decrypt_data(&key, &encrypted).unwrap();
+        assert_eq!(String::from_utf8_lossy(&decrypted), String::from_utf8_lossy(&data_to_encrypt[..]));
     }
 }

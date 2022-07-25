@@ -27,7 +27,7 @@ pub(crate) fn client_builder() -> Client {
         .expect("invalid caracters on header value"),
     );
 
-    reqwest::Client::builder()
+    Client::builder()
         .gzip(true)
         .default_headers(headers)
         .build()

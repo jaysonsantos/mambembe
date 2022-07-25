@@ -6,9 +6,9 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-aes = "*"
+aes = "0.6.0"
 async-trait = "0.1.56"
-block-modes = "*"
+block-modes = "0.7.0"
 data-encoding = "2.3.2"
 hmac = "0.10.1"
 itertools = "0.10.3"

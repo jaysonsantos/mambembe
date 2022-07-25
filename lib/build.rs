@@ -13,7 +13,7 @@ fn main() {
     let in_ci = var_os("CI").is_some();
     // Windows on github has docker but only runs windows images
     let allowed_in_ci = !in_ci || cfg!(linux);
-    if has_docker && allowed_in_ci {
+    if has_docker && var_os("SKIP_INTEGRATION").is_none() && allowed_in_ci {
         println!("cargo:rustc-cfg=docker");
     }
 }

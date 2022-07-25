@@ -19,7 +19,6 @@ pub(crate) fn calculate_token(
     time_sync: Option<&TimeSync>,
 ) -> InternalResult<String> {
     let seed = BASE32.decode(seed).unwrap_or_else(|_| seed.to_vec());
-    // let seed = HEXLOWER.encode(&seed);
     let time = get_time(time_sync);
     let s = build_slauth_context(&seed, digits, time / OTHERS_DEFAULT_PERIOD);
     Ok(s.gen())
