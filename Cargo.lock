@@ -1571,7 +1571,7 @@ dependencies = [
  "rsa",
  "serde",
  "serde_json",
- "sha-1 0.9.4",
+ "sha-1 0.10.0",
  "sha2 0.10.2",
  "slauth",
  "thiserror",
@@ -2400,15 +2400,13 @@ dependencies = [
 
 [[package]]
 name = "sha-1"
-version = "0.9.4"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dfebf75d25bd900fd1e7d11501efab59bc846dbc76196839663e6637bba9f25f"
+checksum = "028f48d513f9678cda28f6e4064755b3fbb2af6acd672f2c209b62323f7aea0f"
 dependencies = [
- "block-buffer 0.9.0",
  "cfg-if 1.0.0",
- "cpuid-bool 0.1.2",
- "digest 0.9.0",
- "opaque-debug 0.3.0",
+ "cpufeatures",
+ "digest 0.10.3",
 ]
 
 [[package]]
