@@ -4,7 +4,8 @@ mod local;
 use std::result;
 
 #[cfg(feature = "with-keyring")]
-use keyring::{Keyring, KeyringError};
+use keyring::{Entry as Keyring, Error as KeyringError};
+use lazy_static::lazy_static;
 use mambembe_lib::{models::AuthenticatorToken, AuthyClient};
 use serde::{de::DeserializeOwned, Serialize};
 use serde_json::{from_str, to_string_pretty};
@@ -14,8 +15,10 @@ use thiserror::Error;
 use crate::local::{Keyring, KeyringError};
 
 const SERVICE_NAME: &str = "mambembe";
-const DEVICES: Keyring = Keyring::new(SERVICE_NAME, "devices.json");
-const TOKENS: Keyring = Keyring::new(SERVICE_NAME, "tokens.json");
+lazy_static! {
+    static ref DEVICES: Keyring = Keyring::new(SERVICE_NAME, "devices.json");
+    static ref TOKENS: Keyring = Keyring::new(SERVICE_NAME, "tokens.json");
+}
 
 type Result<T> = result::Result<T, MambembeKeyringError>;
 
@@ -30,17 +33,17 @@ pub enum MambembeKeyringError {
 }
 
 pub trait Data<T> {
-    fn get_keyring() -> &'static Keyring<'static>;
+    fn get_keyring() -> &'static Keyring;
 }
 
 impl<T> Data<T> for AuthyClient {
-    fn get_keyring() -> &'static Keyring<'static> {
+    fn get_keyring() -> &'static Keyring {
         &DEVICES
     }
 }
 
 impl<T> Data<T> for Vec<AuthenticatorToken> {
-    fn get_keyring() -> &'static Keyring<'static> {
+    fn get_keyring() -> &'static Keyring {
         &TOKENS
     }
 }
@@ -51,7 +54,7 @@ where
 {
     let data = match T::get_keyring().get_password() {
         Ok(data) => data,
-        Err(KeyringError::NoPasswordFound) => return Err(MambembeKeyringError::NoPasswordFound),
+        Err(KeyringError::NoEntry) => return Err(MambembeKeyringError::NoPasswordFound),
         Err(err) => return Err(MambembeKeyringError::UnknownBackendError(err)),
     };
     Ok(from_str(&data)?)

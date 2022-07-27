@@ -24,7 +24,7 @@ pub(crate) fn client_builder() -> Client {
             "Mambembe/{} (+https://github.com/jaysonsantos/mambembe)",
             env!("CARGO_PKG_VERSION")
         ))
-        .expect("invalid caracters on header value"),
+        .expect("invalid characters on header value"),
     );
 
     Client::builder()

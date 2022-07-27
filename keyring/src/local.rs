@@ -9,7 +9,7 @@ type Result<T> = result::Result<T, KeyringError>;
 #[derive(Debug, Error)]
 pub enum KeyringError {
     #[error("no password found")]
-    NoPasswordFound,
+    NoEntry,
     #[error("could not determine apps directory")]
     AppDirectoryNotFound,
     #[error("io error")]
