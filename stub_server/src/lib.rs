@@ -9,213 +9,12 @@ use color_eyre::{
     Help, Result, SectionExt,
 };
 use lazy_static::lazy_static;
-use rand::{thread_rng, Rng};
-use serde::Deserialize;
-use tide::{
-    convert::json, listener::ToListener, prelude::Listener, Request as TideRequest, Response,
-    StatusCode,
-};
-use tokio::{
-    process::Command,
-    sync::{oneshot, Mutex},
-    task::{self, JoinHandle},
-    time::sleep,
-};
+
+use tokio::{process::Command, sync::Mutex, time::sleep};
 use tracing::trace;
 
 lazy_static! {
     static ref WIREMOCK: Arc<Mutex<Option<WiremockRunner>>> = Arc::new(Mutex::new(None));
-}
-
-type Request = TideRequest<Arc<Mutex<State>>>;
-
-struct State {
-    registration_accepted: bool,
-}
-
-impl Default for State {
-    fn default() -> Self {
-        Self {
-            registration_accepted: false,
-        }
-    }
-}
-
-pub struct StubServer {
-    pub url: String,
-    handle: JoinHandle<()>,
-}
-
-impl Drop for StubServer {
-    fn drop(&mut self) {
-        self.handle.abort();
-    }
-}
-
-pub async fn start_stub_server() -> StubServer {
-    let (tx, rx) = oneshot::channel::<()>();
-    let mut rng = thread_rng();
-    let port: u16 = rng.gen_range(12000..20000);
-    let url = format!("http://127.0.0.1:{}/json", port);
-    let mut app = tide::with_state(Arc::new(Mutex::new(State::default())));
-    app.at("/json/users/:phone/status").get(check_device_status);
-    app.at("/json/users/:authy_id/devices/registration/start")
-        .post(registration_start);
-    app.at("/json/users/:authy_id/devices/registration/:request_id/status")
-        .get(registration_status);
-    app.at("/json/users/:authy_id/devices/registration/complete")
-        .post(registration_complete);
-    app.at("/json/devices/:device_id/soft_tokens/:device_id/check")
-        .get(check_device_status);
-    app.at("/json/users/:authy_id/devices/:device_id")
-        .get(check_device_tokens);
-    app.at("/json/users/:authy_id/authenticator_tokens")
-        .get(list_authenticator_tokens);
-
-    let mut listener = format!("127.0.0.1:{}", port).to_listener().unwrap();
-    let handle = task::spawn(async move {
-        listener.bind(app).await.unwrap();
-        tx.send(()).unwrap();
-        println!("bound");
-        listener.accept().await.unwrap();
-    });
-
-    rx.await.unwrap();
-    StubServer { url, handle }
-}
-
-async fn check_device_status(_: Request) -> tide::Result {
-    Ok(json!({
-        "authy_id": 12345,
-        "devices_count": 1,
-        "force_ott": true,
-        "message": "active",
-        "success": true
-    })
-    .into())
-}
-
-async fn registration_start(_request: Request) -> tide::Result {
-    Ok(json!({
-        "approval_pin": 1,
-        "message": "A request was sent to your other devices.",
-        "provider": "push",
-        "request_id": "603a4d9e613cafeac8e36234d",
-        "success": true
-    })
-    .into())
-}
-
-async fn registration_status(request: Request) -> tide::Result {
-    let state = request.state().clone();
-    let mut state = state.lock().await;
-    if state.registration_accepted {
-        Ok(json!({
-            "message": {
-                "request_status": "Request Status."
-            },
-            "pin": "12345",
-            "status": "accepted",
-            "success": true
-        })
-        .into())
-    } else {
-        state.registration_accepted = true;
-        Ok(json!({
-            "message": {
-                "request_status": "Request Status."
-            },
-            "status": "pending",
-            "success": true
-        })
-        .into())
-    }
-}
-
-async fn registration_complete(request: Request) -> tide::Result {
-    Ok(json!({
-        "authy_id": request.param("authy_id").unwrap().parse::<u64>().unwrap(),
-        "device": {
-            "api_key": "not important here",
-            "id": 321321,
-            "reinstall": false,
-            "secret_seed": "48bebacafe22334beba47dcafe37252a"
-        }
-    })
-    .into())
-}
-
-async fn list_authenticator_tokens(_request: Request) -> tide::Result {
-    Ok(json!({
-    "authenticator_tokens": [
-        {
-            "account_type": "lastpass",
-            "digits": 6,
-            "encrypted_seed": "ONQWIZTTMFSHGYLEMFSAU===",
-            "issuer": null,
-            "logo": null,
-            "name": "LastPass",
-            "original_name": "LastPass",
-            "password_timestamp": 1435323862,
-            "salt": "dsdsad",
-            "unique_id": "3213213"
-        },
-        {
-            "account_type": "digitalocean",
-            "digits": 6,
-            "encrypted_seed": "ONQWIZTTMFSHGYLEMFSAU",
-            "issuer": null,
-            "logo": null,
-            "name": "Digital Ocean",
-            "original_name": "DigitalOcean",
-            "password_timestamp": 1435323862,
-            "salt": "dsadsad",
-            "unique_id": "3213213"
-        }
-        ]
-    })
-    .into())
-}
-
-#[allow(dead_code)]
-async fn check_current_device(_request: Request) -> tide::Result {
-    Ok(json!({
-        "message": "Token is correct.",
-        "success": true
-    })
-    .into())
-}
-
-#[derive(Debug, Deserialize)]
-struct OtpTokens {
-    otp1: u32,
-    otp2: u32,
-    otp3: u32,
-}
-
-async fn check_device_tokens(_request: Request) -> tide::Result {
-    // TODO: validate tokens
-    let _tokens: OtpTokens = match _request.query() {
-        Ok(tokens) => tokens,
-        Err(err) => {
-            let mut response = Response::new(StatusCode::BadRequest);
-            response.set_body(json!({
-                "message": "otp tokens not detected",
-                "error": err.to_string()
-            }));
-
-            return Ok(response);
-        }
-    };
-    Ok(json!({
-        "cellphone": "17172720",
-        "country_code": 49,
-        "email": "fakeuser@gmail.com",
-        "multidevice_enabled": true,
-        "multidevices_enabled": true,
-        "success": true,
-    })
-    .into())
 }
 
 struct WiremockRunner {
@@ -251,7 +50,12 @@ impl WiremockRunner {
                 .await
                 .wrap_err("failed to get wiremock port")?,
         )?;
-        let url = format!("http://{}", host.trim());
+        let host = host.trim();
+        let url = if host.starts_with(":") {
+            format!("http://localhost{}", host.trim())
+        } else {
+            format!("http://{}", host.trim())
+        };
 
         Ok(Self { url })
     }
