@@ -1,6 +1,6 @@
 use std::time::SystemTime;
 
-use data_encoding::BASE32;
+use data_encoding::BASE32_NOPAD;
 use itertools::Itertools;
 use slauth::oath::{
     hotp::{HOTPBuilder, HOTPContext},
@@ -18,7 +18,7 @@ pub(crate) fn calculate_token(
     digits: usize,
     time_sync: Option<&TimeSync>,
 ) -> InternalResult<String> {
-    let seed = BASE32.decode(seed).unwrap_or_else(|_| seed.to_vec());
+    let seed = BASE32_NOPAD.decode(seed)?;
     let time = get_time(time_sync);
     let s = build_slauth_context(&seed, digits, time / OTHERS_DEFAULT_PERIOD);
     Ok(s.gen())
@@ -55,5 +55,15 @@ pub(crate) fn get_time(time_sync: Option<&TimeSync>) -> u64 {
     match time_sync {
         Some(time_sync) => time_sync.correct_time(time),
         None => time,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::tokens::calculate_token;
+
+    #[test]
+    fn calculate_token_works_with_unpaded_seed() {
+        assert!(!calculate_token(b"NBSXS", 6, None).unwrap().is_empty())
     }
 }
