@@ -8,7 +8,7 @@ edition = "2018"
 [dependencies]
 aes = "0.6.0"
 async-trait = "0.1.56"
-block-modes = "0.7.0"
+block-modes = "0.9.1"
 data-encoding = "2.3.2"
 hmac = "0.12.1"
 itertools = "0.10.3"
