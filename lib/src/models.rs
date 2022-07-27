@@ -93,12 +93,11 @@ impl AuthenticatorToken {
 
 #[cfg(test)]
 mod tests {
-    use crate::models::AuthenticatorToken;
-    use crate::password::derive_key;
+    use crate::{models::AuthenticatorToken, password::derive_key};
 
     #[test]
     fn test_decrypt() {
-        let token = AuthenticatorToken{
+        let token = AuthenticatorToken {
             account_type: "".to_string(),
             digits: 6,
             encrypted_seed: "Y8yn1UMAmLjmCOEOi8FJcw==".to_string(),
@@ -107,7 +106,7 @@ mod tests {
             password_timestamp: 0,
             salt: "".to_string(),
             unique_id: "".to_string(),
-            derived_key: Some(derive_key("123456", "salty"))
+            derived_key: Some(derive_key("123456", "salty")),
         };
         let decrypted = token.decrypt_seed().unwrap();
         assert_eq!(String::from_utf8_lossy(&decrypted), "my secret seed01");

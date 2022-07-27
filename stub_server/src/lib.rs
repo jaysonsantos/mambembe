@@ -1,5 +1,14 @@
-use std::sync::Arc;
+use std::{
+    process::{Output, Stdio},
+    sync::Arc,
+    time::Duration,
+};
 
+use color_eyre::{
+    eyre::{eyre, WrapErr},
+    Help, Result, SectionExt,
+};
+use lazy_static::lazy_static;
 use rand::{thread_rng, Rng};
 use serde::Deserialize;
 use tide::{
@@ -7,9 +16,16 @@ use tide::{
     StatusCode,
 };
 use tokio::{
+    process::Command,
     sync::{oneshot, Mutex},
     task::{self, JoinHandle},
+    time::sleep,
 };
+use tracing::trace;
+
+lazy_static! {
+    static ref WIREMOCK: Arc<Mutex<Option<WiremockRunner>>> = Arc::new(Mutex::new(None));
+}
 
 type Request = TideRequest<Arc<Mutex<State>>>;
 
@@ -200,23 +216,6 @@ async fn check_device_tokens(_request: Request) -> tide::Result {
         "success": true,
     })
     .into())
-}
-
-use std::{
-    process::{Output, Stdio},
-    time::Duration,
-};
-
-use color_eyre::{
-    eyre::{eyre, WrapErr},
-    Help, Result, SectionExt,
-};
-use lazy_static::lazy_static;
-use tokio::{process::Command, time::sleep};
-use tracing::trace;
-
-lazy_static! {
-    static ref WIREMOCK: Arc<Mutex<Option<WiremockRunner>>> = Arc::new(Mutex::new(None));
 }
 
 struct WiremockRunner {

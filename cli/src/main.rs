@@ -1,4 +1,8 @@
+mod output;
+
 use std::{process::exit, time::Duration};
+
+use crate::output::{Output, ServiceToken};
 
 use color_eyre::{eyre::Context, Result};
 use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
@@ -32,6 +36,8 @@ enum Config {
     GetToken {
         #[structopt(short, long, help = "fuzzy search a service by its name")]
         service_name: String,
+        #[structopt(short, long, help = "output type", default_value)]
+        output: Output,
     },
 }
 
@@ -93,7 +99,10 @@ async fn work() -> Result<()> {
                 );
             }
         }
-        Config::GetToken { service_name } => {
+        Config::GetToken {
+            service_name,
+            output,
+        } => {
             let client = get_saved_client()?;
             let mut services: Vec<AuthenticatorToken> = match mambembe_keyring::get() {
                 Ok(services) => services,
@@ -111,14 +120,17 @@ async fn work() -> Result<()> {
                 .filter(|t| matcher.fuzzy_match(&t.name, &service_name).is_some())
                 .collect();
 
+            let mut output_data = Vec::with_capacity(filtered.len());
+
             for service in filtered {
                 client.initialize_authenticator_token(&mut *service)?;
                 let token = client.get_otp_token(service).await?;
-                println!(
-                    "Service: {:?} Token: {:?} Type: {:#?}",
-                    service.name, token, 1
-                )
+                output_data.push(ServiceToken {
+                    service: service.name.clone(),
+                    token,
+                });
             }
+            output.print(output_data)?;
         }
     }
 

@@ -45,9 +45,11 @@ pub(crate) fn decrypt_data(key: &[u8], data: &str) -> InternalResult<Vec<u8>> {
 mod tests {
     use block_modes::BlockMode;
 
-    use crate::crypto::{Aes256Cbc, decrypt_data};
-    use crate::password::derive_key;
     use super::BASE64;
+    use crate::{
+        crypto::{decrypt_data, Aes256Cbc},
+        password::derive_key,
+    };
 
     #[test]
     fn test_base64_encoder_decoder() {
@@ -81,6 +83,9 @@ mod tests {
         let data_to_encrypt = b"my secret seed01";
         let encrypted = encrypt_data(&key, data_to_encrypt);
         let decrypted = decrypt_data(&key, &encrypted).unwrap();
-        assert_eq!(String::from_utf8_lossy(&decrypted), String::from_utf8_lossy(&data_to_encrypt[..]));
+        assert_eq!(
+            String::from_utf8_lossy(&decrypted),
+            String::from_utf8_lossy(&data_to_encrypt[..])
+        );
     }
 }

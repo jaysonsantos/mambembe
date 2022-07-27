@@ -11,6 +11,7 @@ dotenv = "0.15.0"
 fuzzy-matcher = "0.3.7"
 mambembe-keyring = { path = "../keyring/" }
 mambembe-lib = { path = "../lib" }
+serde = "1.0.140"
 serde_json = "1.0.82"
 structopt = "0.3.21"
 tokio = { version = "1.20.1", features = ["full"] }

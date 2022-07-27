@@ -3,8 +3,7 @@ use reqwest::{
     header::{HeaderMap, HeaderValue},
     Client,
 };
-use rsa::pkcs1::DecodeRsaPrivateKey;
-use rsa::RsaPrivateKey;
+use rsa::{pkcs1::DecodeRsaPrivateKey, RsaPrivateKey};
 use tracing::debug;
 
 use crate::api_models::AuthyApiError;
