@@ -13,7 +13,7 @@ mambembe-keyring = { path = "../keyring/" }
 mambembe-lib = { path = "../lib" }
 serde = "1.0.140"
 serde_json = "1.0.82"
-structopt = "0.3.21"
+structopt = "0.3.26"
 tokio = { version = "1.20.1", features = ["full"] }
 tracing = "0.1.35"
 tracing-error = "0.2.0"
