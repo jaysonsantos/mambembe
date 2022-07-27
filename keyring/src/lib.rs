@@ -64,6 +64,6 @@ where
     let data = to_string_pretty(data)?;
     T::get_keyring()
         .set_password(&data)
-        .map_err(|e| MambembeKeyringError::UnknownBackendError(e))?;
+        .map_err(MambembeKeyringError::UnknownBackendError)?;
     Ok(())
 }

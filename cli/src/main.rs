@@ -2,8 +2,6 @@ mod output;
 
 use std::{process::exit, time::Duration};
 
-use crate::output::{Output, ServiceToken};
-
 use color_eyre::{eyre::Context, Result};
 use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
 use mambembe_keyring::MambembeKeyringError;
@@ -23,6 +21,8 @@ use tokio::{
 use tracing::{info, instrument};
 use tracing_error::ErrorLayer;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
+
+use crate::output::{Output, ServiceToken};
 
 #[derive(Debug, StructOpt)]
 enum Config {

@@ -9,7 +9,6 @@ use color_eyre::{
     Help, Result, SectionExt,
 };
 use lazy_static::lazy_static;
-
 use tokio::{process::Command, sync::Mutex, time::sleep};
 use tracing::trace;
 
@@ -51,7 +50,7 @@ impl WiremockRunner {
                 .wrap_err("failed to get wiremock port")?,
         )?;
         let host = host.trim();
-        let url = if host.starts_with(":") {
+        let url = if host.starts_with(':') {
             format!("http://localhost{}", host.trim())
         } else {
             format!("http://{}", host.trim())

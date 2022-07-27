@@ -1,8 +1,8 @@
-use crate::output::ServiceToken;
 use std::str::FromStr;
 
-use crate::Output;
 use serde::Serialize;
+
+use crate::{output::ServiceToken, Output};
 
 #[derive(Debug, Serialize)]
 pub(crate) struct Alfred {

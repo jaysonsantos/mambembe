@@ -46,6 +46,6 @@ pub enum InternalError {
     /// Never goes to clients
     #[error("decode failed")]
     DecodeFailed(#[from] DecodeError),
-    #[error("decryption error")]
-    DecryptionError(#[from] block_modes::BlockModeError),
+    #[error("decryption error unpad error")]
+    DecryptionError,
 }

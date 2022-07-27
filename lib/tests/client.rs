@@ -81,6 +81,6 @@ mod docker {
                 CheckRegistrationStatus::Pending => sleep(Duration::from_millis(10)).await,
             }
         };
-        let _ = client.complete_registration(&pin).await.unwrap();
+        client.complete_registration(&pin).await.unwrap();
     }
 }

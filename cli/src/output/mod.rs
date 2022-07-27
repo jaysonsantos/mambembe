@@ -1,10 +1,9 @@
 mod alfred;
 
-use crate::output::alfred::Alfred;
-
-use color_eyre::{eyre::Context, Report, Result};
+use color_eyre::Result;
 use serde::{Deserialize, Serialize};
-use std::str::FromStr;
+
+use crate::output::alfred::Alfred;
 
 #[derive(Serialize)]
 pub struct ServiceToken {

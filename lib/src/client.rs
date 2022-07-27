@@ -166,7 +166,7 @@ impl AuthyClientApi for AuthyClient {
         let response = check_api_errors(response).await?;
 
         let authy_response: AuthyCheckStatusResponse = response.json().await.unwrap();
-        self.authy_id = authy_response.authy_id.clone();
+        self.authy_id = authy_response.authy_id;
 
         let output = match authy_response.message.as_str() {
             "new" => CheckStatusResponse::RegisterAccount,
@@ -348,10 +348,8 @@ impl AuthyClientApi for AuthyClient {
         debug!("Returned private keys {:?}", data);
         let key = data
             .as_object()
-            .map(|o| o.get("private_key"))
-            .flatten()
-            .map(|k| k.as_str())
-            .flatten()
+            .and_then(|o| o.get("private_key"))
+            .and_then(|k| k.as_str())
             .expect("failed to get rsa_key");
 
         self.parsed_private_key = Some(parse_private_key(key)?);

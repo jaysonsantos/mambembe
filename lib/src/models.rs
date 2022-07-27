@@ -59,7 +59,7 @@ impl Device {
         time_sync: Option<&TimeSync>,
     ) -> (String, String, String) {
         let seed = HEXLOWER
-            .decode(&self.secret_seed.as_bytes())
+            .decode(self.secret_seed.as_bytes())
             .expect("invalid secret");
 
         calculate_future_tokens(&seed, time_sync)
@@ -100,7 +100,7 @@ mod tests {
         let token = AuthenticatorToken {
             account_type: "".to_string(),
             digits: 6,
-            encrypted_seed: "Y8yn1UMAmLjmCOEOi8FJcw==".to_string(),
+            encrypted_seed: "Y8yn1UMAmLjmCOEOi8FJc6G5zvBzZxaFEPpPgl+QaxE=".to_string(),
             name: "".to_string(),
             original_name: None,
             password_timestamp: 0,

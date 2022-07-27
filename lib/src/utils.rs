@@ -48,7 +48,7 @@ pub(crate) async fn check_api_errors(response: reqwest::Response) -> Result<reqw
             match parsed_body {
                 Err(err) => {
                     debug!("failed to parse error body {:?}", err);
-                    return Err(MambembeError::ApiError { body, source });
+                    Err(MambembeError::ApiError { body, source })
                 }
                 Ok(parsed_body) => match parsed_body.error_code.as_str() {
                     DAMAGED_TOKEN_ERROR => Err(MambembeError::DamagedToken),
@@ -61,7 +61,7 @@ pub(crate) async fn check_api_errors(response: reqwest::Response) -> Result<reqw
 }
 
 pub(crate) fn parse_private_key(key: &str) -> Result<RsaPrivateKey> {
-    let key: String = key.lines().filter(|l| !l.starts_with("-")).collect();
+    let key: String = key.lines().filter(|l| !l.starts_with('-')).collect();
     let decoded = BASE64.decode(key.as_bytes()).unwrap();
 
     let private_key = RsaPrivateKey::from_pkcs1_der(&decoded)?;

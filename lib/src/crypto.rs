@@ -1,11 +1,10 @@
-use aes::Aes256;
-use block_modes::{block_padding::NoPadding, BlockMode, Cbc};
+use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, KeyIvInit};
 use data_encoding::Encoding;
 use lazy_static::lazy_static;
 
-use crate::error::InternalResult;
+use crate::error::{InternalError, InternalResult};
 
-type Aes256Cbc = Cbc<Aes256, NoPadding>;
+type Aes256Cbc = cbc::Decryptor<aes::Aes256>;
 
 lazy_static! {
     static ref BASE64: Encoding = {
@@ -21,35 +20,25 @@ lazy_static! {
 pub(crate) fn decrypt_data(key: &[u8], data: &str) -> InternalResult<Vec<u8>> {
     // IV on authy is always empty
     let iv = [0u8; 16];
-    let cipher = Aes256Cbc::new_var(key, &iv).unwrap();
+    let cipher = Aes256Cbc::new(key.into(), &iv.into());
 
-    let mut buffer = BASE64
+    let buffer = BASE64
         .decode(data.as_bytes())
         .expect("data is not valid base64");
 
-    let output = cipher.decrypt(&mut buffer)?;
-
-    let padding_length = *output.last().unwrap() as usize;
-    // Sometimes the padding is used
-    let content_size = output
-        .len()
-        .checked_sub(padding_length)
-        .unwrap_or_else(|| output.len());
-
-    let without_padding = &output[0..content_size];
-
-    Ok(without_padding.to_vec())
+    cipher
+        .decrypt_padded_vec_mut::<Pkcs7>(&buffer)
+        .map_err(|_| InternalError::DecryptionError)
 }
 
 #[cfg(test)]
 mod tests {
-    use block_modes::BlockMode;
+    use aes::cipher::{block_padding::Pkcs7, BlockEncryptMut, KeyIvInit};
 
     use super::BASE64;
-    use crate::{
-        crypto::{decrypt_data, Aes256Cbc},
-        password::derive_key,
-    };
+    use crate::{crypto::decrypt_data, password::derive_key};
+
+    type Aes256CbcEncryptor = cbc::Encryptor<aes::Aes256>;
 
     #[test]
     fn test_base64_encoder_decoder() {
@@ -61,7 +50,7 @@ mod tests {
         for case in &cases {
             let decoded = BASE64
                 .decode(case.as_bytes())
-                .expect(&format!("data {:?} is not valid base64", case));
+                .unwrap_or_else(|_| panic!("data {:?} is not valid base64", case));
             let parsed = String::from_utf8_lossy(&decoded);
             assert_eq!(&parsed, expected);
         }
@@ -70,11 +59,9 @@ mod tests {
     #[cfg(test)]
     fn encrypt_data(key: &[u8], data: &[u8]) -> String {
         let iv = [0u8; 16];
-        let cipher = Aes256Cbc::new_var(key, &iv).unwrap();
-        let mut buffer = data.to_vec();
-        let len = buffer.len();
-        let encrypted = cipher.encrypt(&mut buffer, len).unwrap();
-        BASE64.encode(encrypted)
+        let cipher = Aes256CbcEncryptor::new(key.into(), &iv.into());
+        let encrypted = cipher.encrypt_padded_vec_mut::<Pkcs7>(data);
+        BASE64.encode(&encrypted)
     }
 
     #[test]
