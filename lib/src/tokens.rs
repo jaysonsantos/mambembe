@@ -13,6 +13,7 @@ const DEFAULT_OTP_DIGITS: usize = 7;
 const AUTHY_DEFAULT_PERIOD: u64 = 10;
 const OTHERS_DEFAULT_PERIOD: u64 = 30;
 
+#[tracing::instrument]
 pub(crate) fn calculate_token(
     seed: &[u8],
     digits: usize,
@@ -24,6 +25,7 @@ pub(crate) fn calculate_token(
     Ok(s.gen())
 }
 
+#[tracing::instrument]
 pub(crate) fn build_slauth_context(seed: &[u8], digits: usize, padded_time: u64) -> HOTPContext {
     HOTPBuilder::new()
         .algorithm(HashesAlgorithm::SHA1)
@@ -33,6 +35,7 @@ pub(crate) fn build_slauth_context(seed: &[u8], digits: usize, padded_time: u64)
         .build()
 }
 
+#[tracing::instrument]
 pub(crate) fn calculate_future_tokens(
     seed: &[u8],
     time_sync: Option<&TimeSync>,
@@ -47,6 +50,7 @@ pub(crate) fn calculate_future_tokens(
         .expect("should not happen")
 }
 
+#[tracing::instrument]
 pub(crate) fn get_time(time_sync: Option<&TimeSync>) -> u64 {
     let time = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)

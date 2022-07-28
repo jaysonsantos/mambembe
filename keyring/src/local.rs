@@ -16,13 +16,15 @@ pub enum KeyringError {
     IoError(#[from] io::Error),
 }
 
-pub struct Keyring<'a> {
-    service_name: &'a str,
-    username: &'a str,
+pub struct Keyring {
+    service_name: String,
+    username: String,
 }
 
-impl<'a> Keyring<'a> {
-    pub const fn new(service_name: &'a str, username: &'a str) -> Self {
+impl Keyring {
+    pub fn new(service_name: &str, username: &str) -> Self {
+        let service_name = service_name.to_string();
+        let username = username.to_string();
         Self {
             service_name,
             username,
@@ -32,7 +34,7 @@ impl<'a> Keyring<'a> {
     pub fn get_password(&self) -> Result<String> {
         let file_name = self.get_storage_file()?;
         fs::read_to_string(&file_name).map_err(|e| match e.kind() {
-            io::ErrorKind::NotFound => KeyringError::NoPasswordFound,
+            io::ErrorKind::NotFound => KeyringError::NoEntry,
             _ => e.into(),
         })
     }
@@ -47,11 +49,11 @@ impl<'a> Keyring<'a> {
         Ok(self
             .get_project_directory()?
             .config_dir()
-            .join(self.username))
+            .join(&self.username))
     }
 
     fn get_project_directory(&self) -> Result<ProjectDirs> {
-        ProjectDirs::from("com", "Jayson Reis", self.service_name)
+        ProjectDirs::from("com", "Jayson Reis", &self.service_name)
             .ok_or(KeyringError::AppDirectoryNotFound)
     }
 }

@@ -87,7 +87,7 @@ impl AuthenticatorToken {
             }
         })?;
 
-        Ok(data)
+        Ok(data.to_ascii_uppercase())
     }
 }
 
@@ -109,6 +109,6 @@ mod tests {
             derived_key: Some(derive_key("123456", "salty")),
         };
         let decrypted = token.decrypt_seed().unwrap();
-        assert_eq!(String::from_utf8_lossy(&decrypted), "my secret seed01");
+        assert_eq!(String::from_utf8_lossy(&decrypted), "MY SECRET SEED01");
     }
 }
