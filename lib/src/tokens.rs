@@ -1,7 +1,8 @@
 use std::time::SystemTime;
 
-use data_encoding::BASE32_NOPAD;
+use data_encoding::{Encoding, Specification};
 use itertools::Itertools;
+use lazy_static::lazy_static;
 use slauth::oath::{
     hotp::{HOTPBuilder, HOTPContext},
     HashesAlgorithm,
@@ -12,6 +13,16 @@ use crate::{client::TimeSync, error::InternalResult};
 const DEFAULT_OTP_DIGITS: usize = 7;
 const AUTHY_DEFAULT_PERIOD: u64 = 10;
 const OTHERS_DEFAULT_PERIOD: u64 = 30;
+
+lazy_static! {
+    static ref BASE32_NOPAD: Encoding = {
+        let mut spec = Specification::new();
+        // authy can also have non rfc compliant base32 data
+        spec.check_trailing_bits = false;
+        spec.symbols.push_str("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567");
+        spec.encoding().unwrap()
+    };
+}
 
 #[tracing::instrument]
 pub(crate) fn calculate_token(
@@ -69,5 +80,16 @@ mod tests {
     #[test]
     fn calculate_token_works_with_unpaded_seed() {
         assert!(!calculate_token(b"NBSXS", 6, None).unwrap().is_empty())
+    }
+
+    #[test]
+    fn non_rfc_conformant_seed() {
+        assert!(!calculate_token(
+            b"DZQS7RJ3CX7FP4RFZNHMGOH64UIJBSDTLO67TRCGMWG6GDS2IPKT",
+            6,
+            None
+        )
+        .unwrap()
+        .is_empty())
     }
 }

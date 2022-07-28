@@ -2,7 +2,7 @@ mod output;
 
 use std::{process::exit, time::Duration};
 
-use color_eyre::{eyre::Context, Result};
+use color_eyre::{config::HookBuilder, eyre::Context, Result};
 use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
 use mambembe_keyring::MambembeKeyringError;
 use mambembe_lib::{
@@ -55,7 +55,10 @@ pub fn setup_error_handlers() -> Result<()> {
         .with(fmt_layer)
         .try_init()?;
 
-    color_eyre::install()?;
+    HookBuilder::default()
+        .issue_url(concat!(env!("CARGO_PKG_REPOSITORY"), "/issues/new"))
+        .add_issue_metadata("version", env!("CARGO_PKG_VERSION"))
+        .install()?;
     Ok(())
 }
 

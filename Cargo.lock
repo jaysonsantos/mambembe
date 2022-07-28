@@ -322,12 +322,13 @@ dependencies = [
  "once_cell",
  "owo-colors",
  "tracing-error",
+ "url",
 ]
 
 [[package]]
 name = "color-eyre"
 version = "0.6.2"
-source = "git+https://github.com/jaysonsantos/color-eyre#c770783f171a2dfa7407ce84dab09bf628f9e44b"
+source = "git+https://github.com/jaysonsantos/color-eyre#1400430238b7f70792dba0accf4f95429873e990"
 dependencies = [
  "backtrace",
  "color-spantrace",

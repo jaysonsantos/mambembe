@@ -16,18 +16,18 @@ pub struct Device {
     secret_seed: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum CheckStatusResponse {
     RegisterDevice,
     RegisterAccount,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum RegisterDeviceResponse {
     RegistrationPending(RequestId),
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Debug, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum CheckRegistrationStatus {
     Pending,

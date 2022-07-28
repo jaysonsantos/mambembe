@@ -3,10 +3,11 @@ name = "mambembe-cli"
 version = "0.1.1"
 authors = []
 edition = "2018"
+repository = "https://github.com/jaysonsantos/mambembe"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-color-eyre = "0.6.2"
+color-eyre = { version = "0.6.2", features = ["issue-url"] }
 dotenv = "0.15.0"
 fuzzy-matcher = "0.3.7"
 mambembe-keyring = { path = "../keyring/" }
