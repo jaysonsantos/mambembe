@@ -1,0 +1,5 @@
+<gresources>
+    <gresource prefix="/mambembe">
+        <file compressed="true">main.css</file>
+    </gresource>
+</gresources>
