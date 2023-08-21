@@ -10,7 +10,7 @@ directories = { version = "4.0.1", optional = true }
 keyring = { version = "1.2.0", optional = true }
 lazy_static = "1.4.0"
 mambembe-lib = { path = "../lib" }
-serde = "1.0.140"
+serde = "1.0.185"
 serde_json = "1.0.82"
 thiserror = "1.0.31"
 
