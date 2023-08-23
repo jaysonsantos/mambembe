@@ -4,5 +4,18 @@
   ],
   "automerge": true,
   "automergeType": "pr-comment",
-  "automergeComment": "bors: r+"
+  "automergeComment": "bors: r+",
+  "packageRules": [
+    {
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch",
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
+    }
+  ]
 }
