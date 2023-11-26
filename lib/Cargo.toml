@@ -6,27 +6,27 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-aes = "0.8.1"
-async-trait = "0.1.56"
+aes = "0.8.3"
+async-trait = "0.1.74"
 cbc = { version = "0.1.2", features = ["block-padding", "alloc"] }
-data-encoding = "2.3.2"
+data-encoding = "2.5.0"
 hmac = "0.12.1"
-itertools = "0.10.3"
+itertools = "0.12.0"
 json = "0.12.4"
 lazy_static = "1.4.0"
 md5 = "0.7.0"
-pbkdf2 = { version = "0.11.0", default-features = false }
+pbkdf2 = { version = "0.12.2", default-features = false }
 rand = "0.8.5"
-reqwest = { version = "0.11.11", default-features = false, features = ["json", "gzip", "rustls-tls"] }
-rsa = "0.6.1"
-serde = { version = "1.0.140", features = ["derive"] }
-serde_json = "1.0.82"
-sha-1 = "0.10.0"
-sha2 = "0.10.2"
+reqwest = { version = "0.11.22", default-features = false, features = ["json", "gzip", "rustls-tls"] }
+rsa = "0.9.4"
+serde = { version = "1.0.193", features = ["derive"] }
+serde_json = "1.0.108"
+sha-1 = "0.10.1"
+sha2 = "0.10.8"
 slauth = { version = "0.5.0", default-features = false }
-thiserror = "1.0.31"
-tracing = "0.1.35"
-url = { version = "2.2.2", features = ["serde"] }
+thiserror = "1.0.50"
+tracing = "0.1.40"
+url = { version = "2.5.0", features = ["serde"] }
 
 [dev-dependencies]
 dotenv = "0.15.0"
