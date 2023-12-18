@@ -17,21 +17,21 @@ lazy_static = "1.4.0"
 md5 = "0.7.0"
 pbkdf2 = { version = "0.12.2", default-features = false }
 rand = "0.8.5"
-reqwest = { version = "0.11.22", default-features = false, features = ["json", "gzip", "rustls-tls"] }
-rsa = "0.9.4"
+reqwest = { version = "0.11.23", default-features = false, features = ["json", "gzip", "rustls-tls"] }
+rsa = "0.9.6"
 serde = { version = "1.0.193", features = ["derive"] }
 serde_json = "1.0.108"
 sha-1 = "0.10.1"
 sha2 = "0.10.8"
 slauth = { version = "0.5.0", default-features = false }
-thiserror = "1.0.50"
+thiserror = "1.0.51"
 tracing = "0.1.40"
 url = { version = "2.5.0", features = ["serde"] }
 
 [dev-dependencies]
 dotenv = "0.15.0"
 mambembe-stub-server = { path = "../stub_server" }
-tokio = { version = "1.20.1", features = ["rt-multi-thread"] }
+tokio = { version = "1.35.0", features = ["rt-multi-thread"] }
 
 [build-dependencies]
 dotenv = "0.15.0"
