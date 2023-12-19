@@ -6,7 +6,7 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-directories = { version = "4.0.1", optional = true }
+directories = { version = "5.0.1", optional = true }
 keyring = { version = "1.2.1", optional = true }
 lazy_static = "1.4.0"
 mambembe-lib = { path = "../lib" }
