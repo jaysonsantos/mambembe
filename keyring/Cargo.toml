@@ -12,7 +12,7 @@ lazy_static = "1.4.0"
 mambembe-lib = { path = "../lib" }
 serde = "1.0.193"
 serde_json = "1.0.108"
-thiserror = "1.0.50"
+thiserror = "1.0.51"
 
 [features]
 with-keyring = ["keyring"]
