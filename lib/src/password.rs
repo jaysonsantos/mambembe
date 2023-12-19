@@ -13,7 +13,8 @@ pub(crate) fn derive_key(backup_password: &str, salt: &str) -> Vec<u8> {
         salt.as_bytes(),
         AUTHY_ITERATIONS.unwrap().into(),
         &mut derived_key,
-    ).expect("failed to derive key");
+    )
+    .expect("failed to derive key");
 
     derived_key.to_vec()
 }
