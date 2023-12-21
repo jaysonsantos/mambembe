@@ -7,7 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 aes = "0.8.3"
-async-trait = "0.1.74"
+async-trait = "0.1.75"
 cbc = { version = "0.1.2", features = ["block-padding", "alloc"] }
 data-encoding = "2.5.0"
 hmac = "0.12.1"
@@ -31,7 +31,7 @@ url = { version = "2.5.0", features = ["serde"] }
 [dev-dependencies]
 dotenv = "0.15.0"
 mambembe-stub-server = { path = "../stub_server" }
-tokio = { version = "1.35.0", features = ["rt-multi-thread"] }
+tokio = { version = "1.35.1", features = ["rt-multi-thread"] }
 
 [build-dependencies]
 dotenv = "0.15.0"
