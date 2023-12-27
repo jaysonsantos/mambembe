@@ -149,11 +149,7 @@ async fn work() -> Result<()> {
             };
             for service in services.iter_mut() {
                 client.initialize_authenticator_token(service)?;
-                println!(
-                    "Servie: {} Seed: {}",
-                    service.name,
-                    &service.dump_seed()?
-                );
+                println!("Servie: {} Seed: {}", service.name, &service.dump_seed()?);
             }
         }
     }

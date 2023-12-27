@@ -40,7 +40,7 @@ pub enum CheckRegistrationStatus {
 
 impl Device {
     pub(crate) fn hash_secret(&self) -> String {
-        format!("{:x}", sha2::Sha256::digest(&self.secret_seed.as_bytes()))
+        format!("{:x}", sha2::Sha256::digest(self.secret_seed.as_bytes()))
     }
 }
 
