@@ -140,7 +140,7 @@ impl AsyncFactoryComponent for TokenEntry {
         }
     }
 
-    async fn update(&mut self, msg: Self::Input, sender: AsyncFactorySender<Self>) {
+    async fn update(&mut self, msg: Self::Input, _sender: AsyncFactorySender<Self>) {
         self.reset();
         match msg {
             TokenInput::RefreshToken => {
