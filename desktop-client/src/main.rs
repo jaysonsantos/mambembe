@@ -354,21 +354,19 @@ impl MambembeDesktop {
     async fn get_client_from_keyring(
         sender: AsyncComponentSender<MambembeDesktop>,
     ) -> Option<Arc<RwLock<AuthyClient>>> {
-        dbg!(
-            spawn_blocking(move || match mambembe_keyring::get::<AuthyClient>() {
-                Ok(client) => dbg!(Some(Arc::new(RwLock::new(client)))),
-                Err(MambembeKeyringError::NoPasswordFound) => {
-                    sender.input(AppInputMessage::LoginNeeded);
-                    None
-                }
-                Err(e) => {
-                    sender.input(AppInputMessage::Error(e.into()));
-                    None
-                }
-            })
-            .await
-            .expect("Unexpected error getting client")
-        )
+        spawn_blocking(move || match mambembe_keyring::get::<AuthyClient>() {
+            Ok(client) => Some(Arc::new(RwLock::new(client))),
+            Err(MambembeKeyringError::NoPasswordFound) => {
+                sender.input(AppInputMessage::LoginNeeded);
+                None
+            }
+            Err(e) => {
+                sender.input(AppInputMessage::Error(e.into()));
+                None
+            }
+        })
+        .await
+        .expect("Unexpected error getting client")
     }
 
     async fn create_token_entries_from_refreshed_tokens<'a>(
