@@ -17,8 +17,10 @@ use crate::local::{Keyring, KeyringError};
 
 const SERVICE_NAME: &str = "mambembe";
 lazy_static! {
-    static ref DEVICES: Keyring = Keyring::new(SERVICE_NAME, "devices.json");
-    static ref TOKENS: Keyring = Keyring::new(SERVICE_NAME, "tokens.json");
+    static ref DEVICES: Keyring =
+        Keyring::new(SERVICE_NAME, "devices.json").expect("failed to create keyring");
+    static ref TOKENS: Keyring =
+        Keyring::new(SERVICE_NAME, "tokens.json").expect("failed to create keyring");
 }
 
 type Result<T> = result::Result<T, MambembeKeyringError>;
