@@ -1198,6 +1198,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
+ "tracing",
 ]
 
 [[package]]
@@ -1209,6 +1210,7 @@ dependencies = [
  "cbc",
  "data-encoding",
  "dotenv",
+ "hex",
  "hmac 0.12.1",
  "itertools",
  "json",

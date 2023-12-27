@@ -36,7 +36,7 @@ impl WiremockRunner {
 
         check_process(
             &compose()
-                .args(&["up", "-d"])
+                .args(["up", "-d"])
                 .output()
                 .await
                 .wrap_err("error to bring wiremock up")?,
@@ -44,7 +44,7 @@ impl WiremockRunner {
 
         let host = check_process(
             &compose()
-                .args(&["port", "wiremock", "8080"])
+                .args(["port", "wiremock", "8080"])
                 .output()
                 .await
                 .wrap_err("failed to get wiremock port")?,

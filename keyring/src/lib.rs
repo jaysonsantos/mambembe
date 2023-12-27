@@ -10,6 +10,7 @@ use mambembe_lib::{models::AuthenticatorToken, AuthyClient};
 use serde::{de::DeserializeOwned, Serialize};
 use serde_json::{from_str, to_string_pretty};
 use thiserror::Error;
+use tracing::instrument;
 
 #[cfg(feature = "without-keyring")]
 use crate::local::{Keyring, KeyringError};
@@ -37,17 +38,20 @@ pub trait Data<T> {
 }
 
 impl<T> Data<T> for AuthyClient {
+    #[instrument]
     fn get_keyring() -> &'static Keyring {
         &DEVICES
     }
 }
 
 impl<T> Data<T> for Vec<AuthenticatorToken> {
+    #[instrument]
     fn get_keyring() -> &'static Keyring {
         &TOKENS
     }
 }
 
+#[instrument]
 pub fn get<T>() -> Result<T>
 where
     T: DeserializeOwned + Data<T>,
@@ -60,6 +64,7 @@ where
     Ok(from_str(&data)?)
 }
 
+#[instrument(skip(data))]
 pub fn set<T>(data: &T) -> Result<()>
 where
     T: Serialize + Data<T>,

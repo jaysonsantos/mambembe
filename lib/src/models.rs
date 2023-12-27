@@ -1,10 +1,14 @@
-use data_encoding::HEXLOWER;
+use data_encoding::{BASE32, HEXLOWER};
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
 
 use crate::{
-    client::TimeSync, crypto::decrypt_data, error::Result, password::derive_key,
-    tokens::calculate_future_tokens, MambembeError,
+    client::TimeSync,
+    crypto::decrypt_data,
+    error::Result,
+    password::derive_key,
+    tokens::{calculate_future_tokens, decode_seed},
+    MambembeError,
 };
 
 pub type Pin = String;
@@ -36,7 +40,7 @@ pub enum CheckRegistrationStatus {
 
 impl Device {
     pub(crate) fn hash_secret(&self) -> String {
-        format!("{:x}", sha2::Sha256::digest(&self.secret_seed.as_bytes()))
+        format!("{:x}", sha2::Sha256::digest(self.secret_seed.as_bytes()))
     }
 }
 
@@ -88,6 +92,12 @@ impl AuthenticatorToken {
         })?;
 
         Ok(data.to_ascii_uppercase())
+    }
+
+    pub fn dump_seed(&self) -> Result<String> {
+        self.decrypt_seed()
+            .map(decode_seed)
+            .map(|seed| BASE32.encode(&seed)) // Re-encode again because most of the clients expect this
     }
 }
 

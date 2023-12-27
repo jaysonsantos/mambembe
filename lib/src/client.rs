@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fmt::Write, fs};
 
 use async_trait::async_trait;
 use rand::{thread_rng, Rng};
@@ -49,11 +49,11 @@ impl TimeSync {
             TimeSync::Future {
                 last_time_checked: _,
                 time_offset,
-            } => (time + time_offset),
+            } => time + time_offset,
             TimeSync::Past {
                 last_time_checked: _,
                 time_offset,
-            } => (time - time_offset),
+            } => time - time_offset,
         }
     }
 }
@@ -108,10 +108,10 @@ impl AuthyClient {
     pub fn with_url(url: &str, device_name: &str, backup_password: &str) -> Result<Self> {
         let mut signature = [0u8; 32];
         thread_rng().fill(&mut signature);
-        let signature = signature
-            .iter()
-            .map(|n| format!("{:x}", n))
-            .collect::<String>();
+        let signature = signature.iter().fold(String::new(), |mut output, n| {
+            let _ = write!(output, "{:x}", n);
+            output
+        });
 
         Ok(Self {
             url: url.parse()?,
@@ -236,7 +236,7 @@ impl AuthyClientApi for AuthyClient {
     #[instrument]
     async fn complete_registration(&mut self, pin: &str) -> Result<()> {
         // I'm assuming this is used for idempotency so this should suffice
-        let uuid = format!("{:x}", md5::compute(&pin.as_bytes()));
+        let uuid = format!("{:x}", md5::compute(pin.as_bytes()));
         let payload = AuthyCompleteRegistrationRequest {
             api_key: API_KEY.to_string(),
             locale: DEFAULT_LOCALE.to_string(),
