@@ -139,7 +139,7 @@ impl SimpleAsyncComponent for MambembeDesktop {
     }
 
     async fn init(
-        init: Self::Init,
+        _init: Self::Init,
         root: Self::Root,
         sender: AsyncComponentSender<Self>,
     ) -> AsyncComponentParts<Self> {
@@ -166,7 +166,6 @@ impl SimpleAsyncComponent for MambembeDesktop {
                     _ => AppInputMessage::Ignore,
                 },
             );
-        let error_alert_sender = sender.clone();
         let error_alert = Alert::builder()
             .transient_for(&root)
             .launch(AlertSettings {
@@ -188,9 +187,7 @@ impl SimpleAsyncComponent for MambembeDesktop {
             AsyncFactoryVecDeque::<TokenEntry>::new(gtk::ListBox::default(), sender.input_sender());
 
         let (senderz, receiver) = broadcast::channel(1);
-        let cloned_broadcast = senderz.clone();
 
-        let refresh_sender = senderz.clone();
         let app_sender = sender.clone();
         tokio::spawn(async move {
             // Get interval for the next minute
