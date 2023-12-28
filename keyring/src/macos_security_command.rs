@@ -39,11 +39,12 @@ impl Keyring {
             .arg(&self.service_name)
             .arg("-w")
             .output()?;
-
-        Ok(String::from_utf8_lossy(
-            &hex::decode(&command.stdout.strip_suffix(&[b'\n']).unwrap()).expect("invalid hex"),
-        )
-        .to_string())
+        if let Some(stdout) = command.stdout.strip_suffix(&[b'\n']) {
+            return Ok(
+                String::from_utf8_lossy(&hex::decode(stdout).expect("invalid hex")).to_string(),
+            );
+        }
+        Err(KeyringError::NoEntry)
     }
 
     pub fn set_password(&self, password: &str) -> Result<()> {
