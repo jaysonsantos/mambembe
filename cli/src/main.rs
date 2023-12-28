@@ -47,12 +47,12 @@ pub fn setup_error_handlers() -> Result<()> {
         return Ok(());
     }
     let error_layer = ErrorLayer::default();
-    let filter_layer = EnvFilter::try_from_default_env().or_else(|_| EnvFilter::try_new("info"))?;
+ //   let filter_layer = EnvFilter::try_from_default_env().or_else(|_| EnvFilter::try_new("info"))?;
     let fmt_layer = fmt::layer().with_target(false);
 
     tracing_subscriber::Registry::default()
         .with(error_layer)
-        .with(filter_layer)
+//        .with(filter_layer)
         .with(fmt_layer)
         .try_init()?;
 

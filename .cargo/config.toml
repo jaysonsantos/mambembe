@@ -1,0 +1,2 @@
+[build]
+rustflags = ["--cfg", "uuid_unstable", "--cfg", "tokio_unstable", "-Z", "macro-backtrace", "-Z", "threads=8"]

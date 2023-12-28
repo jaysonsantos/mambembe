@@ -18,8 +18,8 @@ pub enum MambembeError {
     ConfigFileNotFound(#[from] io::Error),
     #[error("failed to parse config")]
     ConfigParsingError(#[from] serde_json::Error),
-    #[error("damaged token halp")]
-    DamagedToken,
+    #[error("damaged token halp {0}")]
+    DamagedToken(String),
     #[error("api error {body}")]
     ApiError {
         body: String,
