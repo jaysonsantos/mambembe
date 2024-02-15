@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         if: "${{ matrix.os  == 'ubuntu-latest'}}"
         run: sudo apt install libdbus-1-dev
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: cargo build --verbose
       - name: Clippy
@@ -40,7 +40,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create bump and changelog
         # After commitizen can bump Cargo.lock files, rever this to their own implementation
         uses: jaysonsantos/commitizen-action@custom-commitizen-install
