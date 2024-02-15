@@ -35,7 +35,7 @@ jobs:
         if: "${{ matrix.os  == 'ubuntu-latest'}}"
         run: sudo apt install libdbus-1-dev
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.9"
       - id: tag
