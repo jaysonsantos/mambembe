@@ -12,10 +12,10 @@ dotenv = "0.15.0"
 fuzzy-matcher = "0.3.7"
 mambembe-keyring = { path = "../keyring/" }
 mambembe-lib = { path = "../lib" }
-serde = "1.0.193"
-serde_json = "1.0.108"
+serde = "1.0.196"
+serde_json = "1.0.113"
 structopt = "0.3.26"
-tokio = { version = "1.35.1", features = ["full"] }
+tokio = { version = "1.36.0", features = ["full"] }
 tracing = "0.1.40"
 tracing-error = "0.2.0"
 tracing-subscriber = { version = "0.3.18", features = ["fmt", "env-filter"] }
