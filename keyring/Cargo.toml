@@ -10,9 +10,9 @@ directories = { version = "5.0.1", optional = true }
 keyring = { version = "2.3.2", optional = true }
 lazy_static = "1.4.0"
 mambembe-lib = { path = "../lib" }
-serde = "1.0.196"
-serde_json = "1.0.113"
-thiserror = "1.0.57"
+serde = "1.0.197"
+serde_json = "1.0.115"
+thiserror = "1.0.58"
 tracing = "0.1.40"
 
 [features]
