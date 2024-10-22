@@ -12,19 +12,19 @@ cbc = { version = "0.1.2", features = ["block-padding", "alloc"] }
 data-encoding = "2.5.0"
 hex = "0.4.3"
 hmac = "0.12.1"
-itertools = "0.12.1"
+itertools = "0.13.0"
 json = "0.12.4"
 lazy_static = "1.4.0"
 md5 = "0.7.0"
 pbkdf2 = { version = "0.12.2", default-features = false }
 rand = "0.8.5"
-reqwest = { version = "0.11.24", default-features = false, features = ["json", "gzip", "rustls-tls"] }
+reqwest = { version = "0.12.0", default-features = false, features = ["json", "gzip", "rustls-tls"] }
 rsa = "0.9.6"
 serde = { version = "1.0.196", features = ["derive"] }
 serde_json = "1.0.113"
 sha-1 = "0.10.1"
 sha2 = "0.10.8"
-slauth = { version = "0.5.0", default-features = false }
+slauth = { version = "0.7.0", default-features = false }
 thiserror = "1.0.57"
 tracing = "0.1.40"
 url = { version = "2.5.0", features = ["serde"] }
