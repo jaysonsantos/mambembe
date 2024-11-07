@@ -25,7 +25,7 @@ serde_json = "1.0.113"
 sha-1 = "0.10.1"
 sha2 = "0.10.8"
 slauth = { version = "0.5.0", default-features = false }
-thiserror = "1.0.57"
+thiserror = "2.0.0"
 tracing = "0.1.40"
 url = { version = "2.5.0", features = ["serde"] }
 

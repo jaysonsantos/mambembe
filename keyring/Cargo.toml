@@ -12,7 +12,7 @@ lazy_static = "1.4.0"
 mambembe-lib = { path = "../lib" }
 serde = "1.0.196"
 serde_json = "1.0.113"
-thiserror = "1.0.57"
+thiserror = "2.0.0"
 tracing = "0.1.40"
 
 [features]
