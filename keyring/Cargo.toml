@@ -7,8 +7,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 directories = { version = "5.0.1", optional = true }
+hex = {version = "0.4.3", optional = true}
 keyring = { version = "2.3.2", optional = true }
-lazy_static = "1.4.0"
 mambembe-lib = { path = "../lib" }
 serde = "1.0.196"
 serde_json = "1.0.113"
@@ -18,3 +18,4 @@ tracing = "0.1.40"
 [features]
 with-keyring = ["keyring"]
 without-keyring = ["directories"]
+macos-keyring-through-security = ["hex"]

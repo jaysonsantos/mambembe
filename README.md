@@ -57,3 +57,6 @@ mgc ()
     mambembe-cli get-token -s "$@" | fzf --reverse -0 -1 | rg -oP 'Token: "\K\d+' | xclip -i -selection clipboard
 }
 ```
+
+## desktop client
+![desktop-cli.png](desktop-cli.png)

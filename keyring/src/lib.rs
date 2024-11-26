@@ -1,5 +1,7 @@
 #[cfg(feature = "without-keyring")]
 mod local;
+#[cfg(feature = "macos-keyring-through-security")]
+mod macos_security_command;
 
 use std::result;
 
@@ -14,13 +16,13 @@ use tracing::instrument;
 
 #[cfg(feature = "without-keyring")]
 use crate::local::{Keyring, KeyringError};
+#[cfg(feature = "macos-keyring-through-security")]
+use crate::macos_security_command::{Keyring, KeyringError};
 
 const SERVICE_NAME: &str = "mambembe";
 lazy_static! {
-    static ref DEVICES: Keyring =
-        Keyring::new(SERVICE_NAME, "devices.json").expect("failed to create keyring");
-    static ref TOKENS: Keyring =
-        Keyring::new(SERVICE_NAME, "tokens.json").expect("failed to create keyring");
+    static ref DEVICES: Keyring = Keyring::new(SERVICE_NAME, "devices.json");
+    static ref TOKENS: Keyring = Keyring::new(SERVICE_NAME, "tokens.json");
 }
 
 type Result<T> = result::Result<T, MambembeKeyringError>;

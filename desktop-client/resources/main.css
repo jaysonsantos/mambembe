@@ -1,0 +1,12 @@
+#main-window {
+    padding: 10px;
+}
+
+#tokens-scrolled-window {
+    padding-top: 10px;
+}
+
+.token-row {
+    padding: 10px;
+    border-bottom: 1px solid #000;
+}

@@ -2,9 +2,23 @@
 name = "mambembe-desktop-client"
 version = "0.1.1"
 authors = ["Jayson Reis <santosdosreis@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
+backtrace = "0.3.68"
+lazy_static = "1.4.0"
+#mambembe-keyring = { version = "0.1.1", path = "../keyring", features = ["with-keyring"] }
+mambembe-keyring = { version = "0.1.1", path = "../keyring", features = ["macos-keyring-through-security"] }
 mambembe-lib = { path = "../lib" }
-iced = { git = "https://github.com/hecrj/iced.git", features = ["tokio"] }
+regex = "1.8.4"
+relm4 = "0.6.0"
+relm4-components = "0.6.0"
+thiserror = "1.0.40"
+tokio = { version = "1.29.1", features = ["full"] }
+tokio-util = { version = "0.7.8", features = ["full"] }
+tracing = "0.1.37"
+tracker = "0.2.1"
+
+[build-dependencies]
+glib-build-tools = "0.17.10"

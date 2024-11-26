@@ -51,7 +51,7 @@ pub(crate) async fn check_api_errors(response: reqwest::Response) -> Result<reqw
                     Err(MambembeError::ApiError { body, source })
                 }
                 Ok(parsed_body) => match parsed_body.error_code.as_str() {
-                    DAMAGED_TOKEN_ERROR => Err(MambembeError::DamagedToken),
+                    DAMAGED_TOKEN_ERROR => Err(MambembeError::DamagedToken(parsed_body.message)),
                     _ => Err(MambembeError::ApiError { body, source }),
                 },
             }
